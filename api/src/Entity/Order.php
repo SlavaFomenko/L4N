@@ -26,6 +26,7 @@ class Order
      * @var StatusOrder|null
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?StatusOrder $status_order = null;
 
     /**
