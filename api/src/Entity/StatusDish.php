@@ -2,15 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\StatusDishRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: StatusDishRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['statusDish:read']],
+    denormalizationContext: ['groups' => ['statusDish:write']]
+)]
 class StatusDish
 {
     /**
@@ -19,24 +25,28 @@ class StatusDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['statusDish:read'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['statusDish:read', 'statusDish:write'])]
     private ?string $title = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['statusDish:read', 'statusDish:write'])]
     private ?string $description = null;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'status_dish')]
+    #[Groups(['statusDish:read'])]
     private Collection $orderDishes;
 
     /**

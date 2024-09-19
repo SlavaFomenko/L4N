@@ -2,14 +2,20 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReceiptRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: ReceiptRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['receipt:read']],
+    denormalizationContext: ['groups' => ['receipt:write']]
+)]
 class Receipt
 {
     /**
@@ -18,6 +24,7 @@ class Receipt
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['receipt:read'])]
     private ?int $id = null;
 
     /**
@@ -25,6 +32,7 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['receipt:read', 'receipt:write'])]
     private ?Order $order = null;
 
     /**
@@ -32,6 +40,7 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['receipt:read', 'receipt:write'])]
     private ?User $user = null;
 
     /**
@@ -39,12 +48,14 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['receipt:read', 'receipt:write'])]
     private ?Discount $discount = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['receipt:read', 'receipt:write'])]
     private ?string $price = null;
 
     /**

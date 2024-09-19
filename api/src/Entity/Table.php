@@ -2,15 +2,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\TableRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+
 /**
  *
  */
 #[ORM\Entity(repositoryClass: TableRepository::class)]
 #[ORM\Table(name: '`table`')]
+#[ApiResource(
+    normalizationContext: ['groups' => ['table:read']],
+    denormalizationContext: ['groups' => ['table:write']]
+)]
 class Table
 {
     /**
@@ -19,36 +26,42 @@ class Table
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['table:read'])]
     private ?int $id = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Groups(['table:read', 'table:write'])]
     private ?int $number = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Groups(['table:read', 'table:write'])]
     private ?int $countSeatPlace = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
+    #[Groups(['table:read', 'table:write'])]
     private ?bool $isTake = null;
 
     /**
      * @var Collection<int, Order>
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'table')]
+    #[Groups(['table:read'])]
     private Collection $orders;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'table')]
+    #[Groups(['table:read'])]
     private Collection $reservations;
 
 

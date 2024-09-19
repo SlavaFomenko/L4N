@@ -2,16 +2,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DishRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: DishRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['dish:read']],
+    denormalizationContext: ['groups' => ['dish:write']]
+)]
 class Dish
 {
     /**
@@ -20,6 +26,7 @@ class Dish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['dish:read'])]
     private ?int $id = null;
 
     /**
@@ -27,48 +34,56 @@ class Dish
      */
     #[ORM\ManyToOne(inversedBy: 'dishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['dish:read', 'dish:write'])]
     private ?Menu $menu = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['dish:read', 'dish:write'])]
     private ?string $price = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['dish:read', 'dish:write'])]
     private ?string $description = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 3)]
+    #[Groups(['dish:read', 'dish:write'])]
     private ?string $weight = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['dish:read', 'dish:write'])]
     private ?string $picture = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
+    #[Groups(['dish:read', 'dish:write'])]
     private ?bool $isHidden = null;
 
     /**
      * @var Collection<int, IngredientDish>
      */
     #[ORM\OneToMany(targetEntity: IngredientDish::class, mappedBy: 'dish')]
+    #[Groups(['dish:read'])]
     private Collection $ingredientDishes;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'dish')]
+    #[Groups(['dish:read'])]
     private Collection $orderDishes;
 
     /**

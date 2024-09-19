@@ -2,13 +2,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\IngredientDishRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: IngredientDishRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['ingredientDish:read']],
+    denormalizationContext: ['groups' => ['ingredientDish:write']]
+)]
 class IngredientDish
 {
     /**
@@ -17,6 +23,7 @@ class IngredientDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['ingredientDish:read'])]
     private ?int $id = null;
 
     /**
@@ -24,6 +31,7 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
     private ?Ingredient $ingredient = null;
 
     /**
@@ -31,12 +39,14 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
     private ?Dish $dish = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
+    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
     private ?bool $isCompulsoryItem = null;
 
 

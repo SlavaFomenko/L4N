@@ -2,15 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DiscountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: DiscountRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['discount:read']],
+    denormalizationContext: ['groups' => ['discount:write']]
+)]
 class Discount
 {
     /**
@@ -19,24 +25,28 @@ class Discount
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['discount:read'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['discount:read', 'discount:write'])]
     private ?string $title = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Groups(['discount:read', 'discount:write'])]
     private ?int $procent = null;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'discount')]
+    #[Groups(['discount:read'])]
     private Collection $receipts;
 
     /**
