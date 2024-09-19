@@ -27,7 +27,7 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?StatusOrder $status_order = null;
+    private ?StatusOrder $statusOrder = null;
 
     /**
      * @var Table|null
@@ -70,16 +70,17 @@ class Order
      */
     public function getStatusOrder(): ?StatusOrder
     {
-        return $this->status_order;
+        return $this->statusOrder;
     }
 
+
     /**
-     * @param StatusOrder|null $status_order
+     * @param StatusOrder|null $statusOrder
      * @return $this
      */
-    public function setStatusOrder(?StatusOrder $status_order): static
+    public function setStatusOrder(?StatusOrder $statusOrder): static
     {
-        $this->status_order = $status_order;
+        $this->statusOrder = $statusOrder;
 
         return $this;
     }

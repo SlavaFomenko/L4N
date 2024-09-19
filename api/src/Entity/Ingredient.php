@@ -38,7 +38,7 @@ class Ingredient
      * @var bool|null
      */
     #[ORM\Column]
-    private ?bool $isAlergic = null;
+    private ?bool $isAllergic = null;
 
     /**
      * @var int|null
@@ -109,18 +109,18 @@ class Ingredient
     /**
      * @return bool|null
      */
-    public function isAlergic(): ?bool
+    public function isAllergic(): ?bool
     {
-        return $this->isAlergic;
+        return $this->isAllergic;
     }
 
     /**
-     * @param bool $isAlergic
+     * @param bool $isAllergic
      * @return $this
      */
-    public function setAlergic(bool $isAlergic): static
+    public function setIsAllergic(bool $isAllergic): static
     {
-        $this->isAlergic = $isAlergic;
+        $this->isAllergic = $isAllergic;
 
         return $this;
     }

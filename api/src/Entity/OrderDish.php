@@ -39,19 +39,8 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?StatusDish $status_dish = null;
+    private ?StatusDish $statusDish = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $start_time = null;
-
-    /**
-     * @var \DateTimeInterface|null
-     */
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $end_time = null;
 
     /**
      * @var Order|null
@@ -59,6 +48,18 @@ class OrderDish
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $order = null;
+
+    /**
+     * @var \DateTimeInterface|null
+     */
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTimeInterface $startTime = null;
+
+    /**
+     * @var \DateTimeInterface|null
+     */
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $endTime = null;
 
     /**
      * @return int|null
@@ -111,54 +112,16 @@ class OrderDish
      */
     public function getStatusDish(): ?StatusDish
     {
-        return $this->status_dish;
+        return $this->statusDish;
     }
 
     /**
-     * @param StatusDish|null $status_dish
+     * @param StatusDish|null $statusDish
      * @return $this
      */
-    public function setStatusDish(?StatusDish $status_dish): static
+    public function setStatusDish(?StatusDish $statusDish): static
     {
-        $this->status_dish = $status_dish;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getStartTime(): ?\DateTimeInterface
-    {
-        return $this->start_time;
-    }
-
-    /**
-     * @param \DateTimeInterface $start_time
-     * @return $this
-     */
-    public function setStartTime(\DateTimeInterface $start_time): static
-    {
-        $this->start_time = $start_time;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getEndTime(): ?\DateTimeInterface
-    {
-        return $this->end_time;
-    }
-
-    /**
-     * @param \DateTimeInterface|null $end_time
-     * @return $this
-     */
-    public function setEndTime(?\DateTimeInterface $end_time): static
-    {
-        $this->end_time = $end_time;
+        $this->statusDish = $statusDish;
 
         return $this;
     }
@@ -178,6 +141,44 @@ class OrderDish
     public function setOrder(?Order $order): static
     {
         $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getStartTime(): ?\DateTimeInterface
+    {
+        return $this->startTime;
+    }
+
+    /**
+     * @param \DateTimeInterface $startTime
+     * @return $this
+     */
+    public function setStartTime(\DateTimeInterface $startTime): static
+    {
+        $this->startTime = $startTime;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getEndTime(): ?\DateTimeInterface
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $endTime
+     * @return $this
+     */
+    public function setEndTime(?\DateTimeInterface $endTime): static
+    {
+        $this->endTime = $endTime;
 
         return $this;
     }

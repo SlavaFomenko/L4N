@@ -6,13 +6,11 @@ use App\Repository\TableRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
 /**
  *
  */
 #[ORM\Entity(repositoryClass: TableRepository::class)]
 #[ORM\Table(name: '`table`')]
-
 class Table
 {
     /**
@@ -24,22 +22,22 @@ class Table
     private ?int $id = null;
 
     /**
-     * @var bool|null
-     */
-    #[ORM\Column]
-    private ?bool $is_take = null;
-
-    /**
-     * @var int|null
-     */
-    #[ORM\Column]
-    private ?int $count_seat_place = null;
-
-    /**
      * @var int|null
      */
     #[ORM\Column]
     private ?int $number = null;
+
+    /**
+     * @var int|null
+     */
+    #[ORM\Column]
+    private ?int $countSeatPlace = null;
+
+    /**
+     * @var bool|null
+     */
+    #[ORM\Column]
+    private ?bool $isTake = null;
 
     /**
      * @var Collection<int, Order>
@@ -71,43 +69,6 @@ class Table
         return $this->id;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function isTake(): ?bool
-    {
-        return $this->is_take;
-    }
-
-    /**
-     * @param bool $is_take
-     * @return $this
-     */
-    public function setTake(bool $is_take): static
-    {
-        $this->is_take = $is_take;
-
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getCountSeatPlace(): ?int
-    {
-        return $this->count_seat_place;
-    }
-
-    /**
-     * @param int $count_seat_place
-     * @return $this
-     */
-    public function setCountSeatPlace(int $count_seat_place): static
-    {
-        $this->count_seat_place = $count_seat_place;
-
-        return $this;
-    }
 
     /**
      * @return int|null
@@ -200,6 +161,44 @@ class Table
                 $reservation->setTable(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCountSeatPlace(): ?string
+    {
+        return $this->countSeatPlace;
+    }
+
+    /**
+     * @param string $countSeatPlace
+     * @return $this
+     */
+    public function setCountSeatPlace(string $countSeatPlace): static
+    {
+        $this->countSeatPlace = $countSeatPlace;
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function isTake(): ?bool
+    {
+        return $this->isTake;
+    }
+
+    /**
+     * @param bool $isTake
+     * @return $this
+     */
+    public function setIsTake(bool $isTake): static
+    {
+        $this->isTake = $isTake;
 
         return $this;
     }

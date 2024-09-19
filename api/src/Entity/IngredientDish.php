@@ -37,7 +37,8 @@ class IngredientDish
      * @var bool|null
      */
     #[ORM\Column]
-    private ?bool $compulsory_item = null;
+    private ?bool $isCompulsoryItem = null;
+
 
     /**
      * @return int|null
@@ -90,16 +91,16 @@ class IngredientDish
      */
     public function isCompulsoryItem(): ?bool
     {
-        return $this->compulsory_item;
+        return $this->isCompulsoryItem;
     }
 
     /**
-     * @param bool $compulsory_item
+     * @param bool $isCompulsoryItem
      * @return $this
      */
-    public function setCompulsoryItem(bool $compulsory_item): static
+    public function setIsCompulsoryItem(bool $isCompulsoryItem): static
     {
-        $this->compulsory_item = $compulsory_item;
+        $this->isCompulsoryItem = $isCompulsoryItem;
 
         return $this;
     }

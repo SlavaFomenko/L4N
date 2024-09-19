@@ -38,13 +38,14 @@ class Reservation
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $start_time = null;
+    private ?\DateTimeInterface $startTime = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $end_time = null;
+    private ?\DateTimeInterface $endTime = null;
+
 
     /**
      * @return int|null
@@ -97,16 +98,16 @@ class Reservation
      */
     public function getStartTime(): ?\DateTimeInterface
     {
-        return $this->start_time;
+        return $this->startTime;
     }
 
     /**
-     * @param \DateTimeInterface $start_time
+     * @param \DateTimeInterface $startTime
      * @return $this
      */
-    public function setStartTime(\DateTimeInterface $start_time): static
+    public function setStartTime(\DateTimeInterface $startTime): static
     {
-        $this->start_time = $start_time;
+        $this->startTime = $startTime;
 
         return $this;
     }
@@ -116,16 +117,16 @@ class Reservation
      */
     public function getEndTime(): ?\DateTimeInterface
     {
-        return $this->end_time;
+        return $this->endTime;
     }
 
     /**
-     * @param \DateTimeInterface|null $end_time
+     * @param \DateTimeInterface|null $endTime
      * @return $this
      */
-    public function setEndTime(?\DateTimeInterface $end_time): static
+    public function setEndTime(?\DateTimeInterface $endTime): static
     {
-        $this->end_time = $end_time;
+        $this->endTime = $endTime;
 
         return $this;
     }

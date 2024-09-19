@@ -195,7 +195,7 @@ class Dish
      * @param bool $isHidden
      * @return $this
      */
-    public function setHidden(bool $isHidden): static
+    public function setIsHidden(bool $isHidden): static
     {
         $this->isHidden = $isHidden;
 
