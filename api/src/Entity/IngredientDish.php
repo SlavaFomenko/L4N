@@ -2,13 +2,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\IngredientDishRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: IngredientDishRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['ingredientDish:read']],
+    denormalizationContext: ['groups' => ['ingredientDish:write']]
+)]
 class IngredientDish
 {
     /**
@@ -17,6 +23,7 @@ class IngredientDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['ingredientDish:read'])]
     private ?int $id = null;
 
     /**
@@ -24,6 +31,7 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
     private ?Ingredient $ingredient = null;
 
     /**
@@ -31,12 +39,14 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
     private ?Dish $dish = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
+    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
     private ?bool $isCompulsoryItem = null;
 
 
@@ -60,7 +70,7 @@ class IngredientDish
      * @param Ingredient|null $ingredient
      * @return $this
      */
-    public function setIngredient(?Ingredient $ingredient): static
+    public function setIngredient(?Ingredient $ingredient): self
     {
         $this->ingredient = $ingredient;
 
@@ -79,7 +89,7 @@ class IngredientDish
      * @param Dish|null $dish
      * @return $this
      */
-    public function setDish(?Dish $dish): static
+    public function setDish(?Dish $dish): self
     {
         $this->dish = $dish;
 
@@ -98,7 +108,7 @@ class IngredientDish
      * @param bool $isCompulsoryItem
      * @return $this
      */
-    public function setIsCompulsoryItem(bool $isCompulsoryItem): static
+    public function setIsCompulsoryItem(bool $isCompulsoryItem): self
     {
         $this->isCompulsoryItem = $isCompulsoryItem;
 

@@ -2,16 +2,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
+#[ApiResource(
+    normalizationContext: ['groups' => ['order:read']],
+    denormalizationContext: ['groups' => ['order:write']]
+)]
 class Order
 {
     /**
@@ -20,6 +26,7 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['order:read'])]
     private ?int $id = null;
 
     /**
@@ -27,6 +34,7 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['order:read', 'order:write'])]
     private ?StatusOrder $statusOrder = null;
 
     /**
@@ -34,18 +42,21 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['order:read', 'order:write'])]
     private ?Table $table = null;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'order')]
+    #[Groups(['order:read'])]
     private Collection $receipts;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'order')]
+    #[Groups(['order:read'])]
     private Collection $orderDishes;
 
     /**
@@ -78,7 +89,7 @@ class Order
      * @param StatusOrder|null $statusOrder
      * @return $this
      */
-    public function setStatusOrder(?StatusOrder $statusOrder): static
+    public function setStatusOrder(?StatusOrder $statusOrder): self
     {
         $this->statusOrder = $statusOrder;
 
@@ -97,7 +108,7 @@ class Order
      * @param Table|null $table
      * @return $this
      */
-    public function setTable(?Table $table): static
+    public function setTable(?Table $table): self
     {
         $this->table = $table;
 
@@ -116,7 +127,7 @@ class Order
      * @param Receipt $receipt
      * @return $this
      */
-    public function addReceipt(Receipt $receipt): static
+    public function addReceipt(Receipt $receipt): self
     {
         if (!$this->receipts->contains($receipt)) {
             $this->receipts->add($receipt);
@@ -130,7 +141,7 @@ class Order
      * @param Receipt $receipt
      * @return $this
      */
-    public function removeReceipt(Receipt $receipt): static
+    public function removeReceipt(Receipt $receipt): self
     {
         if ($this->receipts->removeElement($receipt)) {
             // set the owning side to null (unless already changed)
@@ -154,7 +165,7 @@ class Order
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function addOrderDish(OrderDish $orderDish): static
+    public function addOrderDish(OrderDish $orderDish): self
     {
         if (!$this->orderDishes->contains($orderDish)) {
             $this->orderDishes->add($orderDish);
@@ -168,7 +179,7 @@ class Order
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function removeOrderDish(OrderDish $orderDish): static
+    public function removeOrderDish(OrderDish $orderDish): self
     {
         if ($this->orderDishes->removeElement($orderDish)) {
             // set the owning side to null (unless already changed)

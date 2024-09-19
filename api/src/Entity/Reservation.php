@@ -2,14 +2,20 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['reservation:read']],
+    denormalizationContext: ['groups' => ['reservation:write']]
+)]
 class Reservation
 {
     /**
@@ -18,6 +24,7 @@ class Reservation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['reservation:read'])]
     private ?int $id = null;
 
     /**
@@ -25,6 +32,7 @@ class Reservation
      */
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private ?User $user = null;
 
     /**
@@ -32,18 +40,21 @@ class Reservation
      */
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private ?Table $table = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private ?\DateTimeInterface $startTime = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private ?\DateTimeInterface $endTime = null;
 
 
@@ -67,7 +78,7 @@ class Reservation
      * @param User|null $user
      * @return $this
      */
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -86,7 +97,7 @@ class Reservation
      * @param Table|null $table
      * @return $this
      */
-    public function setTable(?Table $table): static
+    public function setTable(?Table $table): self
     {
         $this->table = $table;
 
@@ -105,7 +116,7 @@ class Reservation
      * @param \DateTimeInterface $startTime
      * @return $this
      */
-    public function setStartTime(\DateTimeInterface $startTime): static
+    public function setStartTime(\DateTimeInterface $startTime): self
     {
         $this->startTime = $startTime;
 
@@ -124,7 +135,7 @@ class Reservation
      * @param \DateTimeInterface|null $endTime
      * @return $this
      */
-    public function setEndTime(?\DateTimeInterface $endTime): static
+    public function setEndTime(?\DateTimeInterface $endTime): self
     {
         $this->endTime = $endTime;
 

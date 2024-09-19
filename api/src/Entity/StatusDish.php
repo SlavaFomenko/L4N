@@ -2,15 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\StatusDishRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: StatusDishRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['statusDish:read']],
+    denormalizationContext: ['groups' => ['statusDish:write']]
+)]
 class StatusDish
 {
     /**
@@ -19,24 +25,28 @@ class StatusDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['statusDish:read'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['statusDish:read', 'statusDish:write'])]
     private ?string $title = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['statusDish:read', 'statusDish:write'])]
     private ?string $description = null;
 
     /**
      * @var Collection<int, OrderDish>
      */
-    #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'status_dish')]
+    #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'statusDish')]
+    #[Groups(['statusDish:read'])]
     private Collection $orderDishes;
 
     /**
@@ -67,7 +77,7 @@ class StatusDish
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -86,7 +96,7 @@ class StatusDish
      * @param string $description
      * @return $this
      */
-    public function setDescription(string $description): static
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -105,7 +115,7 @@ class StatusDish
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function addOrderDish(OrderDish $orderDish): static
+    public function addOrderDish(OrderDish $orderDish): self
     {
         if (!$this->orderDishes->contains($orderDish)) {
             $this->orderDishes->add($orderDish);
@@ -119,7 +129,7 @@ class StatusDish
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function removeOrderDish(OrderDish $orderDish): static
+    public function removeOrderDish(OrderDish $orderDish): self
     {
         if ($this->orderDishes->removeElement($orderDish)) {
             // set the owning side to null (unless already changed)

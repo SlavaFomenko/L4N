@@ -2,15 +2,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\TableRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+
 /**
  *
  */
 #[ORM\Entity(repositoryClass: TableRepository::class)]
 #[ORM\Table(name: '`table`')]
+#[ApiResource(
+    normalizationContext: ['groups' => ['table:read']],
+    denormalizationContext: ['groups' => ['table:write']]
+)]
 class Table
 {
     /**
@@ -19,36 +26,42 @@ class Table
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['table:read'])]
     private ?int $id = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Groups(['table:read', 'table:write'])]
     private ?int $number = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
+    #[Groups(['table:read', 'table:write'])]
     private ?int $countSeatPlace = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
+    #[Groups(['table:read', 'table:write'])]
     private ?bool $isTake = null;
 
     /**
      * @var Collection<int, Order>
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'table')]
+    #[Groups(['table:read'])]
     private Collection $orders;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'table')]
+    #[Groups(['table:read'])]
     private Collection $reservations;
 
 
@@ -82,7 +95,7 @@ class Table
      * @param int $number
      * @return $this
      */
-    public function setNumber(int $number): static
+    public function setNumber(int $number): self
     {
         $this->number = $number;
 
@@ -101,7 +114,7 @@ class Table
      * @param Order $order
      * @return $this
      */
-    public function addOrder(Order $order): static
+    public function addOrder(Order $order): self
     {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);
@@ -115,7 +128,7 @@ class Table
      * @param Order $order
      * @return $this
      */
-    public function removeOrder(Order $order): static
+    public function removeOrder(Order $order): self
     {
         if ($this->orders->removeElement($order)) {
             // set the owning side to null (unless already changed)
@@ -139,7 +152,7 @@ class Table
      * @param Reservation $reservation
      * @return $this
      */
-    public function addReservation(Reservation $reservation): static
+    public function addReservation(Reservation $reservation): self
     {
         if (!$this->reservations->contains($reservation)) {
             $this->reservations->add($reservation);
@@ -153,7 +166,7 @@ class Table
      * @param Reservation $reservation
      * @return $this
      */
-    public function removeReservation(Reservation $reservation): static
+    public function removeReservation(Reservation $reservation): self
     {
         if ($this->reservations->removeElement($reservation)) {
             // set the owning side to null (unless already changed)
@@ -177,7 +190,7 @@ class Table
      * @param string $countSeatPlace
      * @return $this
      */
-    public function setCountSeatPlace(string $countSeatPlace): static
+    public function setCountSeatPlace(string $countSeatPlace): self
     {
         $this->countSeatPlace = $countSeatPlace;
 
@@ -196,7 +209,7 @@ class Table
      * @param bool $isTake
      * @return $this
      */
-    public function setIsTake(bool $isTake): static
+    public function setIsTake(bool $isTake): self
     {
         $this->isTake = $isTake;
 

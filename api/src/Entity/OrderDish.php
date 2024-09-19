@@ -2,14 +2,20 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\OrderDishRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: OrderDishRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['orderDish:read']],
+    denormalizationContext: ['groups' => ['orderDish:write']]
+)]
 class OrderDish
 {
     /**
@@ -18,6 +24,7 @@ class OrderDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['orderDish:read'])]
     private ?int $id = null;
 
     /**
@@ -25,6 +32,7 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['orderDish:read', 'orderDish:write'])]
     private ?Dish $dish = null;
 
     /**
@@ -32,6 +40,7 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['orderDish:read', 'orderDish:write'])]
     private ?User $user = null;
 
     /**
@@ -39,6 +48,7 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['orderDish:read', 'orderDish:write'])]
     private ?StatusDish $statusDish = null;
 
 
@@ -47,18 +57,21 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['orderDish:read', 'orderDish:write'])]
     private ?Order $order = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(['orderDish:read', 'orderDish:write'])]
     private ?\DateTimeInterface $startTime = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    #[Groups(['orderDish:read', 'orderDish:write'])]
     private ?\DateTimeInterface $endTime = null;
 
     /**
@@ -81,7 +94,7 @@ class OrderDish
      * @param Dish|null $dish
      * @return $this
      */
-    public function setDish(?Dish $dish): static
+    public function setDish(?Dish $dish): self
     {
         $this->dish = $dish;
 
@@ -100,7 +113,7 @@ class OrderDish
      * @param User|null $user
      * @return $this
      */
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -119,7 +132,7 @@ class OrderDish
      * @param StatusDish|null $statusDish
      * @return $this
      */
-    public function setStatusDish(?StatusDish $statusDish): static
+    public function setStatusDish(?StatusDish $statusDish): self
     {
         $this->statusDish = $statusDish;
 
@@ -138,7 +151,7 @@ class OrderDish
      * @param Order|null $order
      * @return $this
      */
-    public function setOrder(?Order $order): static
+    public function setOrder(?Order $order): self
     {
         $this->order = $order;
 
@@ -157,7 +170,7 @@ class OrderDish
      * @param \DateTimeInterface $startTime
      * @return $this
      */
-    public function setStartTime(\DateTimeInterface $startTime): static
+    public function setStartTime(\DateTimeInterface $startTime): self
     {
         $this->startTime = $startTime;
 
@@ -176,7 +189,7 @@ class OrderDish
      * @param \DateTimeInterface|null $endTime
      * @return $this
      */
-    public function setEndTime(?\DateTimeInterface $endTime): static
+    public function setEndTime(?\DateTimeInterface $endTime): self
     {
         $this->endTime = $endTime;
 

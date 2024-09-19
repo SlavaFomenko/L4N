@@ -2,15 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\StatusOrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: StatusOrderRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['statusOrder:read']],
+    denormalizationContext: ['groups' => ['statusOrder:write']]
+)]
 class StatusOrder
 {
     /**
@@ -19,24 +25,28 @@ class StatusOrder
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['statusOrder:read'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['statusOrder:read', 'statusOrder:write'])]
     private ?string $title = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Groups(['statusOrder:read', 'statusOrder:write'])]
     private ?string $description = null;
 
     /**
      * @var Collection<int, Order>
      */
-    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'status_order')]
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'statusOrder')]
+    #[Groups(['statusOrder:read'])]
     private Collection $orders;
 
     /**
@@ -67,7 +77,7 @@ class StatusOrder
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -86,7 +96,7 @@ class StatusOrder
      * @param string $description
      * @return $this
      */
-    public function setDescription(string $description): static
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -105,7 +115,7 @@ class StatusOrder
      * @param Order $order
      * @return $this
      */
-    public function addOrder(Order $order): static
+    public function addOrder(Order $order): self
     {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);
@@ -119,7 +129,7 @@ class StatusOrder
      * @param Order $order
      * @return $this
      */
-    public function removeOrder(Order $order): static
+    public function removeOrder(Order $order): self
     {
         if ($this->orders->removeElement($order)) {
             // set the owning side to null (unless already changed)
