@@ -86,6 +86,10 @@ class Dish
     #[Groups(['dish:read'])]
     private Collection $orderDishes;
 
+    #[ORM\Column(length: 255)]
+    #[Groups(['dish:read', 'dish:write'])]
+    private ?string $title = null;
+
     /**
      *
      */
@@ -289,6 +293,18 @@ class Dish
                 $orderDish->setDish(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
 
         return $this;
     }
