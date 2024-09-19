@@ -7,6 +7,11 @@ services:
     container_name: ${PROJECT_NAME}-api
     volumes:
       - ${API_DIRECTORY}:/var/www/project/api
+      - ./docker/api/xdebug.ini:/usr/local/etc/php/conf.d/docker-xdebug.ini
+    environment:
+      XDEBUG_SESSION: 1
+      XDEBUG_MODE: debug, develop
+      PHP_IDE_CONFIG: "serverName=Docker"
     networks:
       - ${PROJECT_NAME}
 
