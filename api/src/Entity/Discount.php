@@ -77,7 +77,7 @@ class Discount
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -96,7 +96,7 @@ class Discount
      * @param int $procent
      * @return $this
      */
-    public function setProcent(int $procent): static
+    public function setProcent(int $procent): self
     {
         $this->procent = $procent;
 
@@ -115,7 +115,7 @@ class Discount
      * @param Receipt $receipt
      * @return $this
      */
-    public function addReceipt(Receipt $receipt): static
+    public function addReceipt(Receipt $receipt): self
     {
         if (!$this->receipts->contains($receipt)) {
             $this->receipts->add($receipt);
@@ -129,7 +129,7 @@ class Discount
      * @param Receipt $receipt
      * @return $this
      */
-    public function removeReceipt(Receipt $receipt): static
+    public function removeReceipt(Receipt $receipt): self
     {
         if ($this->receipts->removeElement($receipt)) {
             // set the owning side to null (unless already changed)

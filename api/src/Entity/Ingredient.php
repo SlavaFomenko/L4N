@@ -92,7 +92,7 @@ class Ingredient
      * @param string $name
      * @return $this
      */
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -111,7 +111,7 @@ class Ingredient
      * @param string $picture
      * @return $this
      */
-    public function setPicture(string $picture): static
+    public function setPicture(string $picture): self
     {
         $this->picture = $picture;
 
@@ -130,7 +130,7 @@ class Ingredient
      * @param bool $isAllergic
      * @return $this
      */
-    public function setIsAllergic(bool $isAllergic): static
+    public function setIsAllergic(bool $isAllergic): self
     {
         $this->isAllergic = $isAllergic;
 
@@ -149,7 +149,7 @@ class Ingredient
      * @param int $count
      * @return $this
      */
-    public function setCount(int $count): static
+    public function setCount(int $count): self
     {
         $this->count = $count;
 
@@ -168,7 +168,7 @@ class Ingredient
      * @param IngredientDish $ingredientDish
      * @return $this
      */
-    public function addIngredientDish(IngredientDish $ingredientDish): static
+    public function addIngredientDish(IngredientDish $ingredientDish): self
     {
         if (!$this->ingredientDishes->contains($ingredientDish)) {
             $this->ingredientDishes->add($ingredientDish);
@@ -182,7 +182,7 @@ class Ingredient
      * @param IngredientDish $ingredientDish
      * @return $this
      */
-    public function removeIngredientDish(IngredientDish $ingredientDish): static
+    public function removeIngredientDish(IngredientDish $ingredientDish): self
     {
         if ($this->ingredientDishes->removeElement($ingredientDish)) {
             // set the owning side to null (unless already changed)

@@ -70,7 +70,7 @@ class IngredientDish
      * @param Ingredient|null $ingredient
      * @return $this
      */
-    public function setIngredient(?Ingredient $ingredient): static
+    public function setIngredient(?Ingredient $ingredient): self
     {
         $this->ingredient = $ingredient;
 
@@ -89,7 +89,7 @@ class IngredientDish
      * @param Dish|null $dish
      * @return $this
      */
-    public function setDish(?Dish $dish): static
+    public function setDish(?Dish $dish): self
     {
         $this->dish = $dish;
 
@@ -108,7 +108,7 @@ class IngredientDish
      * @param bool $isCompulsoryItem
      * @return $this
      */
-    public function setIsCompulsoryItem(bool $isCompulsoryItem): static
+    public function setIsCompulsoryItem(bool $isCompulsoryItem): self
     {
         $this->isCompulsoryItem = $isCompulsoryItem;
 

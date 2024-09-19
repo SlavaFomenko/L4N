@@ -78,7 +78,7 @@ class Receipt
      * @param Order|null $order
      * @return $this
      */
-    public function setOrder(?Order $order): static
+    public function setOrder(?Order $order): self
     {
         $this->order = $order;
 
@@ -97,7 +97,7 @@ class Receipt
      * @param User|null $user
      * @return $this
      */
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -116,7 +116,7 @@ class Receipt
      * @param Discount|null $discount
      * @return $this
      */
-    public function setDiscount(?Discount $discount): static
+    public function setDiscount(?Discount $discount): self
     {
         $this->discount = $discount;
 
@@ -135,7 +135,7 @@ class Receipt
      * @param string $price
      * @return $this
      */
-    public function setPrice(string $price): static
+    public function setPrice(string $price): self
     {
         $this->price = $price;
 

@@ -77,7 +77,7 @@ class StatusOrder
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -96,7 +96,7 @@ class StatusOrder
      * @param string $description
      * @return $this
      */
-    public function setDescription(string $description): static
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -115,7 +115,7 @@ class StatusOrder
      * @param Order $order
      * @return $this
      */
-    public function addOrder(Order $order): static
+    public function addOrder(Order $order): self
     {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);
@@ -129,7 +129,7 @@ class StatusOrder
      * @param Order $order
      * @return $this
      */
-    public function removeOrder(Order $order): static
+    public function removeOrder(Order $order): self
     {
         if ($this->orders->removeElement($order)) {
             // set the owning side to null (unless already changed)

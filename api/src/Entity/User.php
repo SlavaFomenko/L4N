@@ -114,7 +114,7 @@ class User
      * @param string|null $email
      * @return $this
      */
-    public function setEmail(?string $email): static
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -133,7 +133,7 @@ class User
      * @param string $username
      * @return $this
      */
-    public function setUsername(string $username): static
+    public function setUsername(string $username): self
     {
         $this->username = $username;
 
@@ -152,7 +152,7 @@ class User
      * @param string $role
      * @return $this
      */
-    public function setRole(string $role): static
+    public function setRole(string $role): self
     {
         $this->role = $role;
 
@@ -171,7 +171,7 @@ class User
      * @param string $phone
      * @return $this
      */
-    public function setPhone(string $phone): static
+    public function setPhone(string $phone): self
     {
         $this->phone = $phone;
 
@@ -190,7 +190,7 @@ class User
      * @param string|null $password
      * @return $this
      */
-    public function setPassword(?string $password): static
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
 
@@ -209,7 +209,7 @@ class User
      * @param Reservation $reservation
      * @return $this
      */
-    public function addReservation(Reservation $reservation): static
+    public function addReservation(Reservation $reservation): self
     {
         if (!$this->reservations->contains($reservation)) {
             $this->reservations->add($reservation);
@@ -223,7 +223,7 @@ class User
      * @param Reservation $reservation
      * @return $this
      */
-    public function removeReservation(Reservation $reservation): static
+    public function removeReservation(Reservation $reservation): self
     {
         if ($this->reservations->removeElement($reservation)) {
             // set the owning side to null (unless already changed)
@@ -247,7 +247,7 @@ class User
      * @param Receipt $receipt
      * @return $this
      */
-    public function addReceipt(Receipt $receipt): static
+    public function addReceipt(Receipt $receipt): self
     {
         if (!$this->receipts->contains($receipt)) {
             $this->receipts->add($receipt);
@@ -261,7 +261,7 @@ class User
      * @param Receipt $receipt
      * @return $this
      */
-    public function removeReceipt(Receipt $receipt): static
+    public function removeReceipt(Receipt $receipt): self
     {
         if ($this->receipts->removeElement($receipt)) {
             // set the owning side to null (unless already changed)
@@ -285,7 +285,7 @@ class User
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function addOrderDish(OrderDish $orderDish): static
+    public function addOrderDish(OrderDish $orderDish): self
     {
         if (!$this->orderDishes->contains($orderDish)) {
             $this->orderDishes->add($orderDish);
@@ -299,7 +299,7 @@ class User
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function removeOrderDish(OrderDish $orderDish): static
+    public function removeOrderDish(OrderDish $orderDish): self
     {
         if ($this->orderDishes->removeElement($orderDish)) {
             // set the owning side to null (unless already changed)

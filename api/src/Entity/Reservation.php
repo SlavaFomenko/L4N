@@ -78,7 +78,7 @@ class Reservation
      * @param User|null $user
      * @return $this
      */
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -97,7 +97,7 @@ class Reservation
      * @param Table|null $table
      * @return $this
      */
-    public function setTable(?Table $table): static
+    public function setTable(?Table $table): self
     {
         $this->table = $table;
 
@@ -116,7 +116,7 @@ class Reservation
      * @param \DateTimeInterface $startTime
      * @return $this
      */
-    public function setStartTime(\DateTimeInterface $startTime): static
+    public function setStartTime(\DateTimeInterface $startTime): self
     {
         $this->startTime = $startTime;
 
@@ -135,7 +135,7 @@ class Reservation
      * @param \DateTimeInterface|null $endTime
      * @return $this
      */
-    public function setEndTime(?\DateTimeInterface $endTime): static
+    public function setEndTime(?\DateTimeInterface $endTime): self
     {
         $this->endTime = $endTime;
 

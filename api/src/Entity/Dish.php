@@ -115,7 +115,7 @@ class Dish
      * @param Menu|null $menu
      * @return $this
      */
-    public function setMenu(?Menu $menu): static
+    public function setMenu(?Menu $menu): self
     {
         $this->menu = $menu;
 
@@ -134,7 +134,7 @@ class Dish
      * @param string $price
      * @return $this
      */
-    public function setPrice(string $price): static
+    public function setPrice(string $price): self
     {
         $this->price = $price;
 
@@ -153,7 +153,7 @@ class Dish
      * @param string $description
      * @return $this
      */
-    public function setDescription(string $description): static
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -172,7 +172,7 @@ class Dish
      * @param string $weight
      * @return $this
      */
-    public function setWeight(string $weight): static
+    public function setWeight(string $weight): self
     {
         $this->weight = $weight;
 
@@ -191,7 +191,7 @@ class Dish
      * @param string $picture
      * @return $this
      */
-    public function setPicture(string $picture): static
+    public function setPicture(string $picture): self
     {
         $this->picture = $picture;
 
@@ -210,7 +210,7 @@ class Dish
      * @param bool $isHidden
      * @return $this
      */
-    public function setIsHidden(bool $isHidden): static
+    public function setIsHidden(bool $isHidden): self
     {
         $this->isHidden = $isHidden;
 
@@ -229,7 +229,7 @@ class Dish
      * @param IngredientDish $ingredientDish
      * @return $this
      */
-    public function addIngredientDish(IngredientDish $ingredientDish): static
+    public function addIngredientDish(IngredientDish $ingredientDish): self
     {
         if (!$this->ingredientDishes->contains($ingredientDish)) {
             $this->ingredientDishes->add($ingredientDish);
@@ -243,7 +243,7 @@ class Dish
      * @param IngredientDish $ingredientDish
      * @return $this
      */
-    public function removeIngredientDish(IngredientDish $ingredientDish): static
+    public function removeIngredientDish(IngredientDish $ingredientDish): self
     {
         if ($this->ingredientDishes->removeElement($ingredientDish)) {
             // set the owning side to null (unless already changed)
@@ -267,7 +267,7 @@ class Dish
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function addOrderDish(OrderDish $orderDish): static
+    public function addOrderDish(OrderDish $orderDish): self
     {
         if (!$this->orderDishes->contains($orderDish)) {
             $this->orderDishes->add($orderDish);
@@ -281,7 +281,7 @@ class Dish
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function removeOrderDish(OrderDish $orderDish): static
+    public function removeOrderDish(OrderDish $orderDish): self
     {
         if ($this->orderDishes->removeElement($orderDish)) {
             // set the owning side to null (unless already changed)

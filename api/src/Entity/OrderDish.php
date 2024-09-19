@@ -94,7 +94,7 @@ class OrderDish
      * @param Dish|null $dish
      * @return $this
      */
-    public function setDish(?Dish $dish): static
+    public function setDish(?Dish $dish): self
     {
         $this->dish = $dish;
 
@@ -113,7 +113,7 @@ class OrderDish
      * @param User|null $user
      * @return $this
      */
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -132,7 +132,7 @@ class OrderDish
      * @param StatusDish|null $statusDish
      * @return $this
      */
-    public function setStatusDish(?StatusDish $statusDish): static
+    public function setStatusDish(?StatusDish $statusDish): self
     {
         $this->statusDish = $statusDish;
 
@@ -151,7 +151,7 @@ class OrderDish
      * @param Order|null $order
      * @return $this
      */
-    public function setOrder(?Order $order): static
+    public function setOrder(?Order $order): self
     {
         $this->order = $order;
 
@@ -170,7 +170,7 @@ class OrderDish
      * @param \DateTimeInterface $startTime
      * @return $this
      */
-    public function setStartTime(\DateTimeInterface $startTime): static
+    public function setStartTime(\DateTimeInterface $startTime): self
     {
         $this->startTime = $startTime;
 
@@ -189,7 +189,7 @@ class OrderDish
      * @param \DateTimeInterface|null $endTime
      * @return $this
      */
-    public function setEndTime(?\DateTimeInterface $endTime): static
+    public function setEndTime(?\DateTimeInterface $endTime): self
     {
         $this->endTime = $endTime;
 

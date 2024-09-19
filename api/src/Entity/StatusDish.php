@@ -77,7 +77,7 @@ class StatusDish
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -96,7 +96,7 @@ class StatusDish
      * @param string $description
      * @return $this
      */
-    public function setDescription(string $description): static
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -115,7 +115,7 @@ class StatusDish
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function addOrderDish(OrderDish $orderDish): static
+    public function addOrderDish(OrderDish $orderDish): self
     {
         if (!$this->orderDishes->contains($orderDish)) {
             $this->orderDishes->add($orderDish);
@@ -129,7 +129,7 @@ class StatusDish
      * @param OrderDish $orderDish
      * @return $this
      */
-    public function removeOrderDish(OrderDish $orderDish): static
+    public function removeOrderDish(OrderDish $orderDish): self
     {
         if ($this->orderDishes->removeElement($orderDish)) {
             // set the owning side to null (unless already changed)

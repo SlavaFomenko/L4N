@@ -77,7 +77,7 @@ class Menu
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -96,7 +96,7 @@ class Menu
      * @param string $type
      * @return $this
      */
-    public function setType(string $type): static
+    public function setType(string $type): self
     {
         $this->type = $type;
 
@@ -115,7 +115,7 @@ class Menu
      * @param Dish $dish
      * @return $this
      */
-    public function addDish(Dish $dish): static
+    public function addDish(Dish $dish): self
     {
         if (!$this->dishes->contains($dish)) {
             $this->dishes->add($dish);
@@ -129,7 +129,7 @@ class Menu
      * @param Dish $dish
      * @return $this
      */
-    public function removeDish(Dish $dish): static
+    public function removeDish(Dish $dish): self
     {
         if ($this->dishes->removeElement($dish)) {
             // set the owning side to null (unless already changed)
