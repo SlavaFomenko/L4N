@@ -45,7 +45,7 @@ class StatusDish
     /**
      * @var Collection<int, OrderDish>
      */
-    #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'status_dish')]
+    #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'statusDish')]
     #[Groups(['statusDish:read'])]
     private Collection $orderDishes;
 
