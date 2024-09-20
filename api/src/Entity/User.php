@@ -26,11 +26,11 @@ use Symfony\Component\Validator\Constraints\Type;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['user:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['user:get']]),
-        new Post(denormalizationContext: ['groups' => ['user:post']]),
-        new Put(denormalizationContext: ['groups' => ['user:put']]),
-        new Patch(denormalizationContext: ['groups' => ['user:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:user']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:user']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:user']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:user']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:user']]),
         new Delete()
     ],
 )]
@@ -42,17 +42,18 @@ class User
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:get'])]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:get',
-              'user:post',
-              'user:put',
-              'user:patch'])]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $email = null;
 
     /**
@@ -63,10 +64,11 @@ class User
     #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
     #[Length(min: 1, max: 255)]
     #[NotBlank]
-    #[Groups(['user:get',
-              'user:post',
-              'user:put',
-              'user:patch'])]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $username = null;
 
     /**
@@ -74,10 +76,11 @@ class User
      */
     #[ORM\Column(length: 255)]
     #[NotBlank]
-    #[Groups(['user:get',
-              'user:post',
-              'user:put',
-              'user:patch'])]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $role = null;
 
     /**
@@ -87,41 +90,43 @@ class User
     #[Type('string')]
     #[NotBlank]
     #[Regex("/(?=.*\+[0-9]{3}\s?[0-9]{2}\s?[0-9]{3}\s?[0-9]{4,5}$)/")]
-    #[Groups(['user:get',
-              'user:post',
-              'user:put',
-              'user:patch'])]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $phone = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:get',
-              'user:post',
-              'user:put',
-              'user:patch'])]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $password = null;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user')]
-    #[Groups(['user:get'])]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private Collection $reservations;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'user')]
-    #[Groups(['user:get'])]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private Collection $receipts;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'user')]
-    #[Groups(['user:get'])]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private Collection $orderDishes;
 
     /**

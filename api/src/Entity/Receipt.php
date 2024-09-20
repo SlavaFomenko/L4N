@@ -23,11 +23,11 @@ use Symfony\Component\Validator\Constraints\Type;
 #[ORM\Entity(repositoryClass: ReceiptRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['receipt:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['receipt:get']]),
-        new Post(denormalizationContext: ['groups' => ['receipt:post']]),
-        new Put(denormalizationContext: ['groups' => ['receipt:put']]),
-        new Patch(denormalizationContext: ['groups' => ['receipt:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:receipt']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:receipt']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:receipt']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:receipt']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:receipt']]),
         new Delete()
     ],
 )]
@@ -39,7 +39,7 @@ class Receipt
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['receipt:get'])]
+    #[Groups(['get:item:receipt', 'get:collection:receipt'])]
     private ?int $id = null;
 
     /**
@@ -48,10 +48,13 @@ class Receipt
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
     #[NotBlank]
-    #[Groups(['receipt:get',
-              'receipt:post',
-              'receipt:put',
-              'receipt:patch'])]
+    #[Groups([
+        'get:item:receipt',
+        'get:collection:receipt',
+        'post:collection:receipt',
+        'put:item:receipt',
+        'patch:item:receipt'
+    ])]
     private ?Order $order = null;
 
     /**
@@ -60,10 +63,13 @@ class Receipt
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
     #[NotBlank]
-    #[Groups(['receipt:get',
-              'receipt:post',
-              'receipt:put',
-              'receipt:patch'])]
+    #[Groups([
+        'get:item:receipt',
+        'get:collection:receipt',
+        'post:collection:receipt',
+        'put:item:receipt',
+        'patch:item:receipt'
+    ])]
     private ?User $user = null;
 
     /**
@@ -72,10 +78,13 @@ class Receipt
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
     #[NotBlank]
-    #[Groups(['receipt:get',
-              'receipt:post',
-              'receipt:put',
-              'receipt:patch'])]
+    #[Groups([
+        'get:item:receipt',
+        'get:collection:receipt',
+        'post:collection:receipt',
+        'put:item:receipt',
+        'patch:item:receipt'
+    ])]
     private ?Discount $discount = null;
 
     /**
@@ -85,10 +94,13 @@ class Receipt
     #[NotBlank]
     #[Positive]
     #[Type("numeric")]
-    #[Groups(['receipt:get',
-              'receipt:post',
-              'receipt:put',
-              'receipt:patch'])]
+    #[Groups([
+        'get:item:receipt',
+        'get:collection:receipt',
+        'post:collection:receipt',
+        'put:item:receipt',
+        'patch:item:receipt'
+    ])]
     private ?string $price = null;
 
     /**

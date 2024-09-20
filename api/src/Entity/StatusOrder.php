@@ -25,11 +25,11 @@ use Symfony\Component\Validator\Constraints\Type;
 #[ORM\Entity(repositoryClass: StatusOrderRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['statusOrder:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['statusOrder:get']]),
-        new Post(denormalizationContext: ['groups' => ['statusOrder:post']]),
-        new Put(denormalizationContext: ['groups' => ['statusOrder:put']]),
-        new Patch(denormalizationContext: ['groups' => ['statusOrder:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:statusOrder']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:statusOrder']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:statusOrder']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:statusOrder']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:statusOrder']]),
         new Delete()
     ],
 )]
@@ -41,7 +41,7 @@ class StatusOrder
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['statusOrder:get'])]
+    #[Groups(['get:item:statusOrder', 'get:collection:statusOrder'])]
     private ?int $id = null;
 
     /**
@@ -52,10 +52,13 @@ class StatusOrder
     #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
     #[Length(min: 1, max: 255)]
     #[NotBlank]
-    #[Groups(['statusOrder:get',
-              'statusOrder:post',
-              'statusOrder:put',
-              'statusOrder:patch'])]
+    #[Groups([
+        'get:item:statusOrder',
+        'get:collection:statusOrder',
+        'post:collection:statusOrder',
+        'put:item:statusOrder',
+        'patch:item:statusOrder'
+    ])]
     private ?string $title = null;
 
     /**
@@ -66,17 +69,20 @@ class StatusOrder
     #[Type('string')]
     #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
     #[Length(min: 1)]
-    #[Groups(['statusOrder:get',
-              'statusOrder:post',
-              'statusOrder:put',
-              'statusOrder:patch'])]
+    #[Groups([
+        'get:item:statusOrder',
+        'get:collection:statusOrder',
+        'post:collection:statusOrder',
+        'put:item:statusOrder',
+        'patch:item:statusOrder'
+    ])]
     private ?string $description = null;
 
     /**
      * @var Collection<int, Order>
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'statusOrder')]
-    #[Groups(['statusOrder:get'])]
+    #[Groups(['get:item:statusOrder', 'get:collection:statusOrder'])]
     private Collection $orders;
 
     /**

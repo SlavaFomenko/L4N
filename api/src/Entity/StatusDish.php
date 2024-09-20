@@ -25,11 +25,11 @@ use Symfony\Component\Validator\Constraints\Type;
 #[ORM\Entity(repositoryClass: StatusDishRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['statusDish:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['statusDish:get']]),
-        new Post(denormalizationContext: ['groups' => ['statusDish:post']]),
-        new Put(denormalizationContext: ['groups' => ['statusDish:put']]),
-        new Patch(denormalizationContext: ['groups' => ['statusDish:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:statusDish']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:statusDish']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:statusDish']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:statusDish']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:statusDish']]),
         new Delete()
     ],
 )]
@@ -41,7 +41,7 @@ class StatusDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['statusDish:get'])]
+    #[Groups(['get:item:statusDish', 'get:collection:statusDish'])]
     private ?int $id = null;
 
     /**
@@ -52,10 +52,13 @@ class StatusDish
     #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
     #[Length(min: 1, max: 255)]
     #[NotBlank]
-    #[Groups(['statusDish:get',
-              'statusDish:post', '
-              statusDish:put',
-              'statusDish:patch'])]
+    #[Groups([
+        'get:item:statusDish',
+        'get:collection:statusDish',
+        'post:collection:statusDish',
+        'put:item:statusDish',
+        'patch:item:statusDish'
+    ])]
     private ?string $title = null;
 
     /**
@@ -66,17 +69,20 @@ class StatusDish
     #[Type('string')]
     #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
     #[Length(min: 1)]
-    #[Groups(['statusDish:get',
-              'statusDish:post',
-              'statusDish:put',
-              'statusDish:patch'])]
+    #[Groups([
+        'get:item:statusDish',
+        'get:collection:statusDish',
+        'post:collection:statusDish',
+        'put:item:statusDish',
+        'patch:item:statusDish'
+    ])]
     private ?string $description = null;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'statusDish')]
-    #[Groups(['statusDish:get'])]
+    #[Groups(['get:item:statusDish', 'get:collection:statusDish'])]
     private Collection $orderDishes;
 
     /**

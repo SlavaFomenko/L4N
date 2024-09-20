@@ -28,11 +28,11 @@ use Symfony\Component\Validator\Constraints\Type;
 #[ORM\Entity(repositoryClass: DishRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['dish:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['dish:get']]),
-        new Post(denormalizationContext: ['groups' => ['dish:post']]),
-        new Put(denormalizationContext: ['groups' => ['dish:put']]),
-        new Patch(denormalizationContext: ['groups' => ['dish:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:dish']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:dish']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:dish']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:dish']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:dish']]),
         new Delete()
     ],
 )]
@@ -44,7 +44,7 @@ class Dish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['dish:get'])]
+    #[Groups(['get:item:dish', 'get:collection:dish'])]
     private ?int $id = null;
     /**
      * @var Menu|null
@@ -52,10 +52,13 @@ class Dish
     #[ORM\ManyToOne(inversedBy: 'dishes')]
     #[ORM\JoinColumn(nullable: false)]
     #[NotBlank]
-    #[Groups(['dish:get',
-              'dish:post',
-              'dish:put',
-              'dish:patch'])]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?Menu $menu = null;
 
     /**
@@ -65,10 +68,13 @@ class Dish
     #[NotBlank]
     #[Positive]
     #[Type("numeric")]
-    #[Groups(['dish:get',
-              'dish:post',
-              'dish:put',
-              'dish:patch'])]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $price = null;
 
     /**
@@ -79,10 +85,13 @@ class Dish
     #[Type('string')]
     #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
     #[Length(min: 1)]
-    #[Groups(['dish:get',
-              'dish:post',
-              'dish:put',
-              'dish:patch'])]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $description = null;
 
     /**
@@ -92,10 +101,13 @@ class Dish
     #[NotBlank]
     #[Positive]
     #[Type("numeric")]
-    #[Groups(['dish:get',
-              'dish:post',
-              'dish:put',
-              'dish:patch'])]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $weight = null;
 
     /**
@@ -105,10 +117,13 @@ class Dish
     #[NotBlank]
     #[Type('string')]
     #[Length(min: 1)]
-    #[Groups(['dish:get',
-              'dish:post',
-              'dish:put',
-              'dish:patch'])]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $picture = null;
 
     /**
@@ -117,10 +132,13 @@ class Dish
     #[ORM\Column]
     #[Type('bool')]
     #[Choice(choices: [true, false])]
-    #[Groups(['dish:get',
-              'dish:post',
-              'dish:put',
-              'dish:patch'])]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?bool $isHidden = null;
 
 
@@ -129,10 +147,13 @@ class Dish
     #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
     #[Length(min: 1, max: 255)]
     #[NotBlank]
-    #[Groups(['dish:get',
-              'dish:post',
-              'dish:put',
-              'dish:patch'])]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $title = null;
 
 
@@ -140,14 +161,14 @@ class Dish
      * @var Collection<int, IngredientDish>
      */
     #[ORM\OneToMany(targetEntity: IngredientDish::class, mappedBy: 'dish')]
-    #[Groups(['dish:get'])]
+    #[Groups(['get:item:dish', 'get:collection:dish'])]
     private Collection $ingredientDishes;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'dish')]
-    #[Groups(['dish:get'])]
+    #[Groups(['get:item:dish', 'get:collection:dish'])]
     private Collection $orderDishes;
 
 
