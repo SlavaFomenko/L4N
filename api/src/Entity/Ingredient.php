@@ -121,7 +121,7 @@ class Ingredient
     /**
      * @return bool|null
      */
-    public function isAllergic(): ?bool
+    public function getIsAllergic(): ?bool
     {
         return $this->isAllergic;
     }

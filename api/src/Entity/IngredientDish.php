@@ -99,7 +99,7 @@ class IngredientDish
     /**
      * @return bool|null
      */
-    public function isCompulsoryItem(): ?bool
+    public function getIsCompulsoryItem(): ?bool
     {
         return $this->isCompulsoryItem;
     }
