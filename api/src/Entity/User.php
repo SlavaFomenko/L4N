@@ -3,22 +3,33 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
+use App\State\UserPasswordHasherState;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']]
+    operations:
+    [
+        new Post(processor: UserPasswordHasherState::class)
+    ]
 )]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_WAITER = 'ROLE_WAITER';
+    const ROLE_COOK = 'ROLE_COOK';
     /**
      * @var int|null
      */
@@ -43,11 +54,11 @@ class User
     private ?string $username = null;
 
     /**
-     * @var string|null
+     * @var array|null
      */
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::ARRAY)]
     #[Groups(['user:read', 'user:write'])]
-    private ?string $role = null;
+    private ?array $roles = [User::ROLE_USER];
 
     /**
      * @var string|null
@@ -141,20 +152,20 @@ class User
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getRole(): ?string
+    public function getRoles(): array
     {
-        return $this->role;
+        return $this->roles;
     }
 
     /**
-     * @param string $role
+     * @param array $roles
      * @return $this
      */
-    public function setRole(string $role): self
+    public function setRole(array $roles): self
     {
-        $this->role = $role;
+        $this->roles = $roles;
 
         return $this;
     }
@@ -309,5 +320,13 @@ class User
         }
 
         return $this;
+    }
+
+    public function eraseCredentials(): void
+    {}
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 }
