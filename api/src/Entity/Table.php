@@ -200,7 +200,7 @@ class Table
     /**
      * @return bool|null
      */
-    public function isTake(): ?bool
+    public function getIsTake(): ?bool
     {
         return $this->isTake;
     }

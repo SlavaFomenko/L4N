@@ -205,7 +205,7 @@ class Dish
     /**
      * @return bool|null
      */
-    public function isHidden(): ?bool
+    public function getIsHidden(): ?bool
     {
         return $this->isHidden;
     }
