@@ -15,18 +15,31 @@ services:
     networks:
       - ${PROJECT_NAME}
 
-  frontend:
-    build: 
-      context: ./frontend
-      dockerfile: ../docker/frontend/Dockerfile
-      
+  frontend-personnel:
+    build:
+      context: frontend-personnel
+      dockerfile: ../docker/frontend-personnel/Dockerfile
     command: npm start
     stdin_open: true
     tty: true
-    container_name: ${PROJECT_NAME}-frontend
+    container_name: ${PROJECT_NAME}-frontend-personnel
     volumes:
-      - ${FRONTEND_DIRECTORY}:/var/www/project/frontend
-      - /var/www/project/frontend/node_modules
+      - ${FRONTEND_PERSONNEL_DIRECTORY}:/var/www/project/frontend-personnel
+      - /var/www/project/frontend-personnel/node_modules
+    networks:
+      - ${PROJECT_NAME}
+
+  frontend-guest:
+    build:
+      context: frontend-guest
+      dockerfile: ../docker/frontend-guest/Dockerfile
+    command: npm run build
+    stdin_open: true
+    tty: true
+    container_name: ${PROJECT_NAME}-frontend-guest
+    volumes:
+      - ${FRONTEND_GUEST_DIRECTORY}:/var/www/project/frontend-guest
+      - /var/www/project/frontend-guest/node_modules
     networks:
       - ${PROJECT_NAME}
 
@@ -34,13 +47,13 @@ services:
     image: mysql:8.0.20
     container_name: ${PROJECT_NAME}-mysql
     restart: unless-stopped
-    volumes: 
-      - mysql:/var/lib/mysql 
-    ports: 
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
       - 3306:3306
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     networks:
@@ -71,7 +84,8 @@ services:
       - "8443:8443"
     volumes:
       - ${API_DIRECTORY}:/var/www/project/api
-      - ${FRONTEND_DIRECTORY}:/var/www/project/frontend
+      - ${FRONTEND_PERSONNEL_DIRECTORY}:/var/www/project/frontend-personnel
+      - ${FRONTEND_GUEST_DIRECTORY}:/var/www/project/frontend-guest
       - ./docker/certs/local:/etc/nginx/certs
     networks:
       - ${PROJECT_NAME}
@@ -81,9 +95,13 @@ services:
       NGINX_PORT: ${NGINX_PORT_LOCAL}
       NGINX_CERT_CRT: ${NGINX_CERT_CRT_LOCAL}
       NGINX_CERT_KEY: ${NGINX_CERT_KEY_LOCAL}
+    depends_on:
+      - frontend-personnel
+      - frontend-guest
 
 networks:
   project:
+
 
 volumes:
   mysql:
