@@ -13,6 +13,7 @@ use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  *
@@ -44,6 +45,7 @@ class Reservation
      */
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['reservation:get',
               'reservation:post',
               'reservation:put',
@@ -55,6 +57,7 @@ class Reservation
      */
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['reservation:get',
               'reservation:post',
               'reservation:put',
@@ -65,6 +68,7 @@ class Reservation
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[NotBlank]
     #[Groups(['reservation:get',
               'reservation:post',
               'reservation:put',

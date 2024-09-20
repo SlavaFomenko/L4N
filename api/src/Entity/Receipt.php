@@ -13,6 +13,9 @@ use App\Repository\ReceiptRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -44,6 +47,7 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['receipt:get',
               'receipt:post',
               'receipt:put',
@@ -55,6 +59,7 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['receipt:get',
               'receipt:post',
               'receipt:put',
@@ -66,6 +71,7 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['receipt:get',
               'receipt:post',
               'receipt:put',
@@ -76,6 +82,9 @@ class Receipt
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
     #[Groups(['receipt:get',
               'receipt:post',
               'receipt:put',

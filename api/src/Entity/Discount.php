@@ -14,6 +14,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -39,11 +44,14 @@ class Discount
     #[ORM\Column]
     #[Groups(['discount:get'])]
     private ?int $id = null;
-
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
     #[Groups(['discount:get',
               'discount:post',
               'discount:put',
@@ -54,6 +62,9 @@ class Discount
      * @var int|null
      */
     #[ORM\Column]
+    #[NotBlank]
+    #[Type("integer")]
+    #[Range(min: 0, max: 100)]
     #[Groups(['discount:get',
               'discount:post',
               'discount:put',

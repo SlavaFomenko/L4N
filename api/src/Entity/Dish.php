@@ -15,6 +15,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -45,6 +51,7 @@ class Dish
      */
     #[ORM\ManyToOne(inversedBy: 'dishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['dish:get',
               'dish:post',
               'dish:put',
@@ -55,6 +62,9 @@ class Dish
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
     #[Groups(['dish:get',
               'dish:post',
               'dish:put',
@@ -65,6 +75,10 @@ class Dish
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
+    #[NotBlank]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1)]
     #[Groups(['dish:get',
               'dish:post',
               'dish:put',
@@ -75,6 +89,9 @@ class Dish
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 3)]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
     #[Groups(['dish:get',
               'dish:post',
               'dish:put',
@@ -85,6 +102,9 @@ class Dish
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
+    #[NotBlank]
+    #[Type('string')]
+    #[Length(min: 1)]
     #[Groups(['dish:get',
               'dish:post',
               'dish:put',
@@ -95,11 +115,26 @@ class Dish
      * @var bool|null
      */
     #[ORM\Column]
+    #[Type('bool')]
+    #[Choice(choices: [true, false])]
     #[Groups(['dish:get',
               'dish:post',
               'dish:put',
               'dish:patch'])]
     private ?bool $isHidden = null;
+
+
+    #[ORM\Column(length: 255)]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
+    #[Groups(['dish:get',
+              'dish:post',
+              'dish:put',
+              'dish:patch'])]
+    private ?string $title = null;
+
 
     /**
      * @var Collection<int, IngredientDish>
@@ -115,12 +150,7 @@ class Dish
     #[Groups(['dish:get'])]
     private Collection $orderDishes;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['dish:get',
-              'dish:post',
-              'dish:put',
-              'dish:patch'])]
-    private ?string $title = null;
+
 
     /**
      *

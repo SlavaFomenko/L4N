@@ -13,6 +13,8 @@ use App\Repository\OrderDishRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
 
 /**
  *
@@ -44,6 +46,7 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['orderDish:get',
               'orderDish:post',
               'orderDish:put',
@@ -55,6 +58,7 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['orderDish:get',
               'orderDish:post',
               'orderDish:put',
@@ -66,6 +70,7 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['orderDish:get',
               'orderDish:post',
               'orderDish:put',
@@ -78,6 +83,7 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['orderDish:get',
               'orderDish:post',
               'orderDish:put',
@@ -88,6 +94,7 @@ class OrderDish
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[NotBlank]
     #[Groups(['orderDish:get',
               'orderDish:post',
               'orderDish:put',

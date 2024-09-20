@@ -14,6 +14,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -44,6 +48,10 @@ class StatusDish
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
     #[Groups(['statusDish:get',
               'statusDish:post', '
               statusDish:put',
@@ -54,6 +62,10 @@ class StatusDish
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[NotBlank]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1)]
     #[Groups(['statusDish:get',
               'statusDish:post',
               'statusDish:put',

@@ -12,6 +12,9 @@ use ApiPlatform\Metadata\Put;
 use App\Repository\IngredientDishRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -43,6 +46,7 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['ingredientDish:get',
               'ingredientDish:post',
               'ingredientDish:put',
@@ -54,6 +58,7 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     #[Groups(['ingredientDish:get',
               'ingredientDish:post',
               'ingredientDish:put',
@@ -64,6 +69,8 @@ class IngredientDish
      * @var bool|null
      */
     #[ORM\Column]
+    #[Type('bool')]
+    #[Choice(choices: [true, false])]
     #[Groups(['ingredientDish:get',
               'ingredientDish:post',
               'ingredientDish:put',

@@ -14,6 +14,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -45,6 +49,9 @@ class Table
      * @var int|null
      */
     #[ORM\Column]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
     #[Groups(['table:get',
               'table:post',
               'table:put',
@@ -55,6 +62,9 @@ class Table
      * @var int|null
      */
     #[ORM\Column]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
     #[Groups(['table:get',
               'table:post',
               'table:put',
@@ -65,6 +75,8 @@ class Table
      * @var bool|null
      */
     #[ORM\Column]
+    #[Type('bool')]
+    #[Choice(choices: [true, false])]
     #[Groups(['table:get',
               'table:post',
               'table:put',

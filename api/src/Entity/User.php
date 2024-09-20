@@ -14,6 +14,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -54,6 +59,10 @@ class User
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
     #[Groups(['user:get',
               'user:post',
               'user:put',
@@ -64,6 +73,7 @@ class User
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[NotBlank]
     #[Groups(['user:get',
               'user:post',
               'user:put',
@@ -74,6 +84,9 @@ class User
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Type('string')]
+    #[NotBlank]
+    #[Regex("/(?=.*\+[0-9]{3}\s?[0-9]{2}\s?[0-9]{3}\s?[0-9]{4,5}$)/")]
     #[Groups(['user:get',
               'user:post',
               'user:put',
