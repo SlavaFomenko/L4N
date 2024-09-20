@@ -18,15 +18,19 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxslt1-dev \
     acl \
-    && echo 'alias sf="php bin/console"' >> ~/.bashrc
+    && echo 'alias sf="php bin/console"' >> ~/.bashrc \
 
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype 
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
+  && docker-php-ext-install pdo_mysql gd pdo sockets bcmath xsl xml soap pcntl \
+  && docker-php-ext-enable gd
+
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
 
 RUN docker-php-ext-install \
-    pdo pdo_mysql zip xsl gd intl opcache exif mbstring 
+    pdo pdo_mysql zip xsl gd intl opcache exif mbstring
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 
 
