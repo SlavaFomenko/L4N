@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxslt1-dev \
     acl \
-    && echo 'alias sf="php bin/console"' >> ~/.bashrc \
+    && echo 'alias sf="php bin/console"' >> ~/.bashrc
 
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
   && docker-php-ext-install pdo_mysql gd pdo sockets bcmath xsl xml soap pcntl \
