@@ -15,6 +15,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -22,13 +28,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['ingredient:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['ingredient:get']]),
-        new Post(denormalizationContext: ['groups' => ['ingredient:post']]),
-        new Put(denormalizationContext: ['groups' => ['ingredient:put']]),
-        new Patch(denormalizationContext: ['groups' => ['ingredient:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:ingredient']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:ingredient']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:ingredient']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:ingredient']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:ingredient']]),
         new Delete()
-    ],
+    ]
 )]
 class Ingredient
 {
@@ -38,54 +44,78 @@ class Ingredient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ingredient:get'])]
+    #[Groups(['get:item:ingredient', 'get:collection:ingredient'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['ingredient:get',
-              'ingredient:post',
-              'ingredient:put',
-              'ingredient:patch'])]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
+    #[Groups([
+        'get:item:ingredient',
+        'get:collection:ingredient',
+        'post:collection:ingredient',
+        'put:item:ingredient',
+        'patch:item:ingredient'
+    ])]
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['ingredient:get',
-              'ingredient:post',
-              'ingredient:put',
-              'ingredient:patch'])]
+    #[NotBlank]
+    #[Type('string')]
+    #[Length(min: 1)]
+    #[Groups([
+        'get:item:ingredient',
+        'get:collection:ingredient',
+        'post:collection:ingredient',
+        'put:item:ingredient',
+        'patch:item:ingredient'
+    ])]
     private ?string $picture = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['ingredient:get',
-              'ingredient:post',
-              'ingredient:put',
-              'ingredient:patch'])]
+    #[Type('bool')]
+    #[Choice(choices: [true, false])]
+    #[Groups([
+        'get:item:ingredient',
+        'get:collection:ingredient',
+        'post:collection:ingredient',
+        'put:item:ingredient',
+        'patch:item:ingredient'
+    ])]
     private ?bool $isAllergic = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
-    #[Groups(['ingredient:get',
-              'ingredient:post',
-              'ingredient:put',
-              'ingredient:patch'])]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
+    #[Groups([
+        'get:item:ingredient',
+        'get:collection:ingredient',
+        'post:collection:ingredient',
+        'put:item:ingredient',
+        'patch:item:ingredient'
+    ])]
     private ?int $count = null;
 
     /**
      * @var Collection<int, IngredientDish>
      */
     #[ORM\OneToMany(targetEntity: IngredientDish::class, mappedBy: 'ingredient')]
-    #[Groups(['ingredient:get'])]
+    #[Groups(['get:item:ingredient', 'get:collection:ingredient'])]
     private Collection $ingredientDishes;
 
     /**

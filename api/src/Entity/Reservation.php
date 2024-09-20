@@ -13,6 +13,7 @@ use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  *
@@ -20,11 +21,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['reservation:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['reservation:get']]),
-        new Post(denormalizationContext: ['groups' => ['reservation:post']]),
-        new Put(denormalizationContext: ['groups' => ['reservation:put']]),
-        new Patch(denormalizationContext: ['groups' => ['reservation:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:reservation']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:reservation']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:reservation']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:reservation']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:reservation']]),
         new Delete()
     ],
 )]
@@ -36,7 +37,7 @@ class Reservation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['reservation:get'])]
+    #[Groups(['get:item:reservation', 'get:collection:reservation'])]
     private ?int $id = null;
 
     /**
@@ -44,10 +45,14 @@ class Reservation
      */
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['reservation:get',
-              'reservation:post',
-              'reservation:put',
-              'reservation:patch'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:reservation',
+        'get:collection:reservation',
+        'post:collection:reservation',
+        'put:item:reservation',
+        'patch:item:reservation'
+    ])]
     private ?User $user = null;
 
     /**
@@ -55,30 +60,41 @@ class Reservation
      */
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['reservation:get',
-              'reservation:post',
-              'reservation:put',
-              'reservation:patch'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:reservation',
+        'get:collection:reservation',
+        'post:collection:reservation',
+        'put:item:reservation',
+        'patch:item:reservation'
+    ])]
     private ?Table $table = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    #[Groups(['reservation:get',
-              'reservation:post',
-              'reservation:put',
-              'reservation:patch'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:reservation',
+        'get:collection:reservation',
+        'post:collection:reservation',
+        'put:item:reservation',
+        'patch:item:reservation'
+    ])]
     private ?\DateTimeInterface $startTime = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    #[Groups(['reservation:get',
-              'reservation:post',
-              'reservation:put',
-              'reservation:patch'])]
+    #[Groups([
+        'get:item:reservation',
+        'get:collection:reservation',
+        'post:collection:reservation',
+        'put:item:reservation',
+        'patch:item:reservation'
+    ])]
     private ?\DateTimeInterface $endTime = null;
 
 

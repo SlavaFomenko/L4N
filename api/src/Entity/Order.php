@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  *
@@ -22,11 +23,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Table(name: '`order`')]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['order:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['order:get']]),
-        new Post(denormalizationContext: ['groups' => ['order:post']]),
-        new Put(denormalizationContext: ['groups' => ['order:put']]),
-        new Patch(denormalizationContext: ['groups' => ['order:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:order']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:order']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:order']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:order']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:order']]),
         new Delete()
     ],
 )]
@@ -38,7 +39,7 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['order:get'])]
+    #[Groups(['get:item:order', 'get:collection:order'])]
     private ?int $id = null;
 
     /**
@@ -46,10 +47,14 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['order:get',
-              'order:post',
-              'order:put',
-              'order:patch'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:order',
+        'get:collection:order',
+        'post:collection:order',
+        'put:item:order',
+        'patch:item:order'
+    ])]
     private ?StatusOrder $statusOrder = null;
 
     /**
@@ -57,24 +62,28 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['order:get',
-              'order:post',
-              'order:put',
-              'order:patch'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:order',
+        'get:collection:order',
+        'post:collection:order',
+        'put:item:order',
+        'patch:item:order'
+    ])]
     private ?Table $table = null;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'order')]
-    #[Groups(['order:get'])]
+    #[Groups(['get:item:order', 'get:collection:order'])]
     private Collection $receipts;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'order')]
-    #[Groups(['order:get'])]
+    #[Groups(['get:item:order', 'get:collection:order'])]
     private Collection $orderDishes;
 
     /**

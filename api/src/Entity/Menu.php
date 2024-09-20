@@ -14,6 +14,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -21,11 +25,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['menu:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['menu:get']]),
-        new Post(denormalizationContext: ['groups' => ['menu:post']]),
-        new Put(denormalizationContext: ['groups' => ['menu:put']]),
-        new Patch(denormalizationContext: ['groups' => ['menu:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:menu']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:menu']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:menu']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:menu']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:menu']]),
         new Delete()
     ],
 )]
@@ -37,34 +41,48 @@ class Menu
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['menu:get'])]
+    #[Groups(['get:item:menu', 'get:collection:menu'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['menu:get',
-              'menu:post',
-              'menu:put',
-              'menu:patch'])]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
+    #[Groups([
+        'get:item:menu',
+        'get:collection:menu',
+        'post:collection:menu',
+        'put:item:menu',
+        'patch:item:menu'
+    ])]
     private ?string $title = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['menu:get',
-              'menu:post',
-              'menu:put',
-              'menu:patch'])]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
+    #[Groups([
+        'get:item:menu',
+        'get:collection:menu',
+        'post:collection:menu',
+        'put:item:menu',
+        'patch:item:menu'
+    ])]
     private ?string $type = null;
 
     /**
      * @var Collection<int, Dish>
      */
     #[ORM\OneToMany(targetEntity: Dish::class, mappedBy: 'menu')]
-    #[Groups(['menu:get'])]
+    #[Groups(['get:item:menu', 'get:collection:menu'])]
     private Collection $dishes;
 
     /**

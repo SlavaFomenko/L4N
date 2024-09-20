@@ -14,6 +14,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -21,11 +26,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: DiscountRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['discount:get']]),
-        new GetCollection(normalizationContext: ['groups' => ['discount:get']]),
-        new Post(denormalizationContext: ['groups' => ['discount:post']]),
-        new Put(denormalizationContext: ['groups' => ['discount:put']]),
-        new Patch(denormalizationContext: ['groups' => ['discount:patch']]),
+        new Get(normalizationContext: ['groups' => ['get:item:discount']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:discount']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:discount']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:discount']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:discount']]),
         new Delete()
     ]
 )]
@@ -37,34 +42,46 @@ class Discount
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['discount:get'])]
+    #[Groups(['get:item:discount', 'get:collection:discount'])]
     private ?int $id = null;
-
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['discount:get',
-              'discount:post',
-              'discount:put',
-              'discount:patch'])]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
+    #[Groups([
+        'get:item:discount',
+        'get:collection:discount',
+        'post:item:discount',
+        'put:item:discount',
+        'patch:item:discount'
+    ])]
     private ?string $title = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
-    #[Groups(['discount:get',
-              'discount:post',
-              'discount:put',
-              'discount:patch'])]
+    #[NotBlank]
+    #[Type("integer")]
+    #[Range(min: 0, max: 100)]
+    #[Groups([
+        'get:item:discount',
+        'get:collection:discount',
+        'post:item:discount',
+        'put:item:discount',
+        'patch:item:discount'
+    ])]
     private ?int $procent = null;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'discount')]
-    #[Groups(['discount:get'])]
+    #[Groups(['get:item:discount', 'get:collection:discount'])]
     private Collection $receipts;
 
     /**
