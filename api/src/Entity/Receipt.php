@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\ReceiptRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,8 +19,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 #[ORM\Entity(repositoryClass: ReceiptRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['receipt:read']],
-    denormalizationContext: ['groups' => ['receipt:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['receipt:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['receipt:get']]),
+        new Post(denormalizationContext: ['groups' => ['receipt:post']]),
+        new Put(denormalizationContext: ['groups' => ['receipt:put']]),
+        new Patch(denormalizationContext: ['groups' => ['receipt:patch']]),
+        new Delete()
+    ],
 )]
 class Receipt
 {
@@ -24,7 +36,7 @@ class Receipt
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['receipt:read'])]
+    #[Groups(['receipt:get'])]
     private ?int $id = null;
 
     /**
@@ -32,7 +44,10 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['receipt:read', 'receipt:write'])]
+    #[Groups(['receipt:get',
+              'receipt:post',
+              'receipt:put',
+              'receipt:patch'])]
     private ?Order $order = null;
 
     /**
@@ -40,7 +55,10 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['receipt:read', 'receipt:write'])]
+    #[Groups(['receipt:get',
+              'receipt:post',
+              'receipt:put',
+              'receipt:patch'])]
     private ?User $user = null;
 
     /**
@@ -48,14 +66,20 @@ class Receipt
      */
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['receipt:read', 'receipt:write'])]
+    #[Groups(['receipt:get',
+              'receipt:post',
+              'receipt:put',
+              'receipt:patch'])]
     private ?Discount $discount = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(['receipt:read', 'receipt:write'])]
+    #[Groups(['receipt:get',
+              'receipt:post',
+              'receipt:put',
+              'receipt:patch'])]
     private ?string $price = null;
 
     /**

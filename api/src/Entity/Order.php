@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,8 +21,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
 #[ApiResource(
-    normalizationContext: ['groups' => ['order:read']],
-    denormalizationContext: ['groups' => ['order:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['order:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['order:get']]),
+        new Post(denormalizationContext: ['groups' => ['order:post']]),
+        new Put(denormalizationContext: ['groups' => ['order:put']]),
+        new Patch(denormalizationContext: ['groups' => ['order:patch']]),
+        new Delete()
+    ],
 )]
 class Order
 {
@@ -26,7 +38,7 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['order:read'])]
+    #[Groups(['order:get'])]
     private ?int $id = null;
 
     /**
@@ -34,7 +46,10 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['order:read', 'order:write'])]
+    #[Groups(['order:get',
+              'order:post',
+              'order:put',
+              'order:patch'])]
     private ?StatusOrder $statusOrder = null;
 
     /**
@@ -42,21 +57,24 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['order:read', 'order:write'])]
+    #[Groups(['order:get',
+              'order:post',
+              'order:put',
+              'order:patch'])]
     private ?Table $table = null;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'order')]
-    #[Groups(['order:read'])]
+    #[Groups(['order:get'])]
     private Collection $receipts;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'order')]
-    #[Groups(['order:read'])]
+    #[Groups(['order:get'])]
     private Collection $orderDishes;
 
     /**

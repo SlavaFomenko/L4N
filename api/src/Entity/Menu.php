@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\MenuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,8 +20,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['menu:read']],
-    denormalizationContext: ['groups' => ['menu:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['menu:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['menu:get']]),
+        new Post(denormalizationContext: ['groups' => ['menu:post']]),
+        new Put(denormalizationContext: ['groups' => ['menu:put']]),
+        new Patch(denormalizationContext: ['groups' => ['menu:patch']]),
+        new Delete()
+    ],
 )]
 class Menu
 {
@@ -25,28 +37,34 @@ class Menu
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['menu:read'])]
+    #[Groups(['menu:get'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['menu:read', 'menu:write'])]
+    #[Groups(['menu:get',
+              'menu:post',
+              'menu:put',
+              'menu:patch'])]
     private ?string $title = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['menu:read', 'menu:write'])]
+    #[Groups(['menu:get',
+              'menu:post',
+              'menu:put',
+              'menu:patch'])]
     private ?string $type = null;
 
     /**
      * @var Collection<int, Dish>
      */
     #[ORM\OneToMany(targetEntity: Dish::class, mappedBy: 'menu')]
-    #[Groups(['menu:read'])]
+    #[Groups(['menu:get'])]
     private Collection $dishes;
 
     /**

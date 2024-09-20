@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\DishRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,8 +21,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 #[ORM\Entity(repositoryClass: DishRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['dish:read']],
-    denormalizationContext: ['groups' => ['dish:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['dish:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['dish:get']]),
+        new Post(denormalizationContext: ['groups' => ['dish:post']]),
+        new Put(denormalizationContext: ['groups' => ['dish:put']]),
+        new Patch(denormalizationContext: ['groups' => ['dish:patch']]),
+        new Delete()
+    ],
 )]
 class Dish
 {
@@ -26,68 +38,88 @@ class Dish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['dish:read'])]
+    #[Groups(['dish:get'])]
     private ?int $id = null;
-
     /**
      * @var Menu|null
      */
     #[ORM\ManyToOne(inversedBy: 'dishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[Groups(['dish:get',
+              'dish:post',
+              'dish:put',
+              'dish:patch'])]
     private ?Menu $menu = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[Groups(['dish:get',
+              'dish:post',
+              'dish:put',
+              'dish:patch'])]
     private ?string $price = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[Groups(['dish:get',
+              'dish:post',
+              'dish:put',
+              'dish:patch'])]
     private ?string $description = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 3)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[Groups(['dish:get',
+              'dish:post',
+              'dish:put',
+              'dish:patch'])]
     private ?string $weight = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[Groups(['dish:get',
+              'dish:post',
+              'dish:put',
+              'dish:patch'])]
     private ?string $picture = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[Groups(['dish:get',
+              'dish:post',
+              'dish:put',
+              'dish:patch'])]
     private ?bool $isHidden = null;
 
     /**
      * @var Collection<int, IngredientDish>
      */
     #[ORM\OneToMany(targetEntity: IngredientDish::class, mappedBy: 'dish')]
-    #[Groups(['dish:read'])]
+    #[Groups(['dish:get'])]
     private Collection $ingredientDishes;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'dish')]
-    #[Groups(['dish:read'])]
+    #[Groups(['dish:get'])]
     private Collection $orderDishes;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[Groups(['dish:get',
+              'dish:post',
+              'dish:put',
+              'dish:patch'])]
     private ?string $title = null;
 
     /**
