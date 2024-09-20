@@ -6,8 +6,11 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
+    assets:
+        base_path: "/api"
     #esi: true
     #fragments: true
+
 
 when@test:
     framework:

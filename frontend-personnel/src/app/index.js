@@ -8,7 +8,7 @@ import { store } from "../store";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/personnel'>
       <Provider store={store}>
         <ChakraProvider>
           <Routing/>
