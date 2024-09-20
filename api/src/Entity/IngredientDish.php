@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\IngredientDishRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -12,8 +18,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 #[ORM\Entity(repositoryClass: IngredientDishRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['ingredientDish:read']],
-    denormalizationContext: ['groups' => ['ingredientDish:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['ingredientDish:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['ingredientDish:get']]),
+        new Post(denormalizationContext: ['groups' => ['ingredientDish:post']]),
+        new Put(denormalizationContext: ['groups' => ['ingredientDish:put']]),
+        new Patch(denormalizationContext: ['groups' => ['ingredientDish:patch']]),
+        new Delete()
+    ],
 )]
 class IngredientDish
 {
@@ -23,7 +35,7 @@ class IngredientDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ingredientDish:read'])]
+    #[Groups(['ingredientDish:get'])]
     private ?int $id = null;
 
     /**
@@ -31,7 +43,10 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
+    #[Groups(['ingredientDish:get',
+              'ingredientDish:post',
+              'ingredientDish:put',
+              'ingredientDish:patch'])]
     private ?Ingredient $ingredient = null;
 
     /**
@@ -39,14 +54,20 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
+    #[Groups(['ingredientDish:get',
+              'ingredientDish:post',
+              'ingredientDish:put',
+              'ingredientDish:patch'])]
     private ?Dish $dish = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
+    #[Groups(['ingredientDish:get',
+              'ingredientDish:post',
+              'ingredientDish:put',
+              'ingredientDish:patch'])]
     private ?bool $isCompulsoryItem = null;
 
 

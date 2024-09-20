@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\TableRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,8 +21,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: TableRepository::class)]
 #[ORM\Table(name: '`table`')]
 #[ApiResource(
-    normalizationContext: ['groups' => ['table:read']],
-    denormalizationContext: ['groups' => ['table:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['table:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['table:get']]),
+        new Post(denormalizationContext: ['groups' => ['table:post']]),
+        new Put(denormalizationContext: ['groups' => ['table:put']]),
+        new Patch(denormalizationContext: ['groups' => ['table:patch']]),
+        new Delete()
+    ],
 )]
 class Table
 {
@@ -26,42 +38,51 @@ class Table
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['table:read'])]
+    #[Groups(['table:get'])]
     private ?int $id = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
-    #[Groups(['table:read', 'table:write'])]
+    #[Groups(['table:get',
+              'table:post',
+              'table:put',
+              'table:patch'])]
     private ?int $number = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
-    #[Groups(['table:read', 'table:write'])]
+    #[Groups(['table:get',
+              'table:post',
+              'table:put',
+              'table:patch'])]
     private ?int $countSeatPlace = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['table:read', 'table:write'])]
+    #[Groups(['table:get',
+              'table:post',
+              'table:put',
+              'table:patch'])]
     private ?bool $isTake = null;
 
     /**
      * @var Collection<int, Order>
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'table')]
-    #[Groups(['table:read'])]
+    #[Groups(['table:get'])]
     private Collection $orders;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'table')]
-    #[Groups(['table:read'])]
+    #[Groups(['table:get'])]
     private Collection $reservations;
 
 

@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\StatusOrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,8 +20,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 #[ORM\Entity(repositoryClass: StatusOrderRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['statusOrder:read']],
-    denormalizationContext: ['groups' => ['statusOrder:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['statusOrder:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['statusOrder:get']]),
+        new Post(denormalizationContext: ['groups' => ['statusOrder:post']]),
+        new Put(denormalizationContext: ['groups' => ['statusOrder:put']]),
+        new Patch(denormalizationContext: ['groups' => ['statusOrder:patch']]),
+        new Delete()
+    ],
 )]
 class StatusOrder
 {
@@ -25,28 +37,34 @@ class StatusOrder
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['statusOrder:read'])]
+    #[Groups(['statusOrder:get'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['statusOrder:read', 'statusOrder:write'])]
+    #[Groups(['statusOrder:get',
+              'statusOrder:post',
+              'statusOrder:put',
+              'statusOrder:patch'])]
     private ?string $title = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['statusOrder:read', 'statusOrder:write'])]
+    #[Groups(['statusOrder:get',
+              'statusOrder:post',
+              'statusOrder:put',
+              'statusOrder:patch'])]
     private ?string $description = null;
 
     /**
      * @var Collection<int, Order>
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'statusOrder')]
-    #[Groups(['statusOrder:read'])]
+    #[Groups(['statusOrder:get'])]
     private Collection $orders;
 
     /**

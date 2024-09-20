@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\StatusDishRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,8 +20,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 #[ORM\Entity(repositoryClass: StatusDishRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['statusDish:read']],
-    denormalizationContext: ['groups' => ['statusDish:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['statusDish:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['statusDish:get']]),
+        new Post(denormalizationContext: ['groups' => ['statusDish:post']]),
+        new Put(denormalizationContext: ['groups' => ['statusDish:put']]),
+        new Patch(denormalizationContext: ['groups' => ['statusDish:patch']]),
+        new Delete()
+    ],
 )]
 class StatusDish
 {
@@ -25,28 +37,34 @@ class StatusDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['statusDish:read'])]
+    #[Groups(['statusDish:get'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['statusDish:read', 'statusDish:write'])]
+    #[Groups(['statusDish:get',
+              'statusDish:post', '
+              statusDish:put',
+              'statusDish:patch'])]
     private ?string $title = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['statusDish:read', 'statusDish:write'])]
+    #[Groups(['statusDish:get',
+              'statusDish:post',
+              'statusDish:put',
+              'statusDish:patch'])]
     private ?string $description = null;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'statusDish')]
-    #[Groups(['statusDish:read'])]
+    #[Groups(['statusDish:get'])]
     private Collection $orderDishes;
 
     /**

@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,8 +20,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['user:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['user:get']]),
+        new Post(denormalizationContext: ['groups' => ['user:post']]),
+        new Put(denormalizationContext: ['groups' => ['user:put']]),
+        new Patch(denormalizationContext: ['groups' => ['user:patch']]),
+        new Delete()
+    ],
 )]
 class User
 {
@@ -25,63 +37,78 @@ class User
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read'])]
+    #[Groups(['user:get'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:get',
+              'user:post',
+              'user:put',
+              'user:patch'])]
     private ?string $email = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:get',
+              'user:post',
+              'user:put',
+              'user:patch'])]
     private ?string $username = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:get',
+              'user:post',
+              'user:put',
+              'user:patch'])]
     private ?string $role = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:get',
+              'user:post',
+              'user:put',
+              'user:patch'])]
     private ?string $phone = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:get',
+              'user:post',
+              'user:put',
+              'user:patch'])]
     private ?string $password = null;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user')]
-    #[Groups(['user:read'])]
+    #[Groups(['user:get'])]
     private Collection $reservations;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'user')]
-    #[Groups(['user:read'])]
+    #[Groups(['user:get'])]
     private Collection $receipts;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'user')]
-    #[Groups(['user:read'])]
+    #[Groups(['user:get'])]
     private Collection $orderDishes;
 
     /**

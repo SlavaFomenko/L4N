@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,8 +21,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
  */
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['ingredient:read']],
-    denormalizationContext: ['groups' => ['ingredient:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['ingredient:get']]),
+        new GetCollection(normalizationContext: ['groups' => ['ingredient:get']]),
+        new Post(denormalizationContext: ['groups' => ['ingredient:post']]),
+        new Put(denormalizationContext: ['groups' => ['ingredient:put']]),
+        new Patch(denormalizationContext: ['groups' => ['ingredient:patch']]),
+        new Delete()
+    ],
 )]
 class Ingredient
 {
@@ -26,42 +38,54 @@ class Ingredient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ingredient:read'])]
+    #[Groups(['ingredient:get'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['ingredient:read', 'ingredient:write'])]
+    #[Groups(['ingredient:get',
+              'ingredient:post',
+              'ingredient:put',
+              'ingredient:patch'])]
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['ingredient:read', 'ingredient:write'])]
+    #[Groups(['ingredient:get',
+              'ingredient:post',
+              'ingredient:put',
+              'ingredient:patch'])]
     private ?string $picture = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['ingredient:read', 'ingredient:write'])]
+    #[Groups(['ingredient:get',
+              'ingredient:post',
+              'ingredient:put',
+              'ingredient:patch'])]
     private ?bool $isAllergic = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
-    #[Groups(['ingredient:read', 'ingredient:write'])]
+    #[Groups(['ingredient:get',
+              'ingredient:post',
+              'ingredient:put',
+              'ingredient:patch'])]
     private ?int $count = null;
 
     /**
      * @var Collection<int, IngredientDish>
      */
     #[ORM\OneToMany(targetEntity: IngredientDish::class, mappedBy: 'ingredient')]
-    #[Groups(['ingredient:read'])]
+    #[Groups(['ingredient:get'])]
     private Collection $ingredientDishes;
 
     /**
