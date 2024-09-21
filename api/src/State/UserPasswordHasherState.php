@@ -9,12 +9,23 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserPasswordHasherState implements ProcessorInterface
 {
+    /**
+     * @param ProcessorInterface $processor
+     * @param UserPasswordHasherInterface $passwordHasher
+     */
     public function __construct(
         protected ProcessorInterface $processor,
         protected UserPasswordHasherInterface $passwordHasher
     )
     {}
 
+    /**
+     * @param mixed $data
+     * @param Operation $operation
+     * @param array $uriVariables
+     * @param array $context
+     * @return User
+     */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): User
     {
         if (!$data->getPassword()) {
@@ -26,7 +37,6 @@ class UserPasswordHasherState implements ProcessorInterface
             $data->getPassword()
         );
         $data->setPassword($hashedPassword);
-        $data->eraseCredentials();
 
         return $this->processor->process($data, $operation, $uriVariables, $context);
     }
