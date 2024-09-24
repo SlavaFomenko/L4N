@@ -5,15 +5,19 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\GetCollection;>
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
+use App\State\UserPasswordHasherState;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -28,14 +32,18 @@ use Symfony\Component\Validator\Constraints\Type;
     operations: [
         new Get(normalizationContext: ['groups' => ['get:item:user']]),
         new GetCollection(normalizationContext: ['groups' => ['get:collection:user']]),
-        new Post(denormalizationContext: ['groups' => ['post:collection:user']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:user']],processor: UserPasswordHasherState::class),
         new Put(denormalizationContext: ['groups' => ['put:item:user']]),
         new Patch(denormalizationContext: ['groups' => ['patch:item:user']]),
         new Delete()
-    ],
+    ]
 )]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_WAITER = 'ROLE_WAITER';
+    const ROLE_COOK = 'ROLE_COOK';
     /**
      * @var int|null
      */
@@ -72,16 +80,16 @@ class User
     private ?string $username = null;
 
     /**
-     * @var string|null
+     * @var array|null
      */
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::ARRAY)]
     #[NotBlank]
     #[Groups(['get:item:user',
-              'get:collection:user',
-              'post:collection:user',
-              'put:item:user',
-              'patch:item:user'])]
-    private ?string $role = null;
+        'get:collection:user',
+        'post:collection:user',
+        'put:item:user',
+        'patch:item:user'])]
+    private ?array $roles = [User::ROLE_USER];
 
     /**
      * @var string|null
@@ -186,20 +194,20 @@ class User
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getRole(): ?string
+    public function getRoles(): array
     {
-        return $this->role;
+        return $this->roles;
     }
 
     /**
-     * @param string $role
+     * @param array $roles
      * @return $this
      */
-    public function setRole(string $role): self
+    public function setRole(array $roles): self
     {
-        $this->role = $role;
+        $this->roles = $roles;
 
         return $this;
     }
@@ -354,5 +362,13 @@ class User
         }
 
         return $this;
+    }
+
+    public function eraseCredentials(): void
+    {}
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 }
