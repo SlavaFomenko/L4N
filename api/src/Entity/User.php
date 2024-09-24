@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasherState;
+use App\Validator\UserValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -18,10 +19,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  *
@@ -56,6 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
+    #[Email(groups: ['validate_email'])]
     #[Groups(['get:item:user',
               'get:collection:user',
               'post:collection:user',
@@ -108,6 +113,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
+    #[Length(min: 6, max: 255, groups: ['validate_password'])]
     #[Groups(['post:collection:user',
               'put:item:user',
               'patch:item:user'])]
@@ -134,6 +140,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['get:item:user', 'get:collection:user'])]
     private Collection $orderDishes;
 
+    #[Callback]
+    public function validateFields(ExecutionContextInterface $context): void
+    {
+        UserValidator::validate($this, $context);
+    }
     /**
      *
      */
