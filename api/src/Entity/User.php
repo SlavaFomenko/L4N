@@ -108,9 +108,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['get:item:user',
-              'get:collection:user',
-              'post:collection:user',
+    #[Groups(['post:collection:user',
               'put:item:user',
               'patch:item:user'])]
     private ?string $password = null;
