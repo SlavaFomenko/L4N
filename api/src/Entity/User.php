@@ -32,8 +32,8 @@ use Symfony\Component\Validator\Constraints\Type;
         new Get(normalizationContext: ['groups' => ['get:item:user']]),
         new GetCollection(normalizationContext: ['groups' => ['get:collection:user']]),
         new Post(denormalizationContext: ['groups' => ['post:collection:user']],processor: UserPasswordHasherState::class),
-        new Put(denormalizationContext: ['groups' => ['put:item:user']]),
-        new Patch(denormalizationContext: ['groups' => ['patch:item:user']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:user']],processor: UserPasswordHasherState::class),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:user']],processor: UserPasswordHasherState::class),
         new Delete()
     ]
 )]
