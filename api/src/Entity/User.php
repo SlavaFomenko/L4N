@@ -79,9 +79,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     /**
-     * @var array|null
+     * @var array|string[]|null
      */
-    #[ORM\Column(type: Types::ARRAY)]
+    #[ORM\Column(type: Types::JSON)]
     #[NotBlank]
     #[Groups(['get:item:user',
         'get:collection:user',
@@ -370,4 +370,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->email;
     }
+
+
+
 }
