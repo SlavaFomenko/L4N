@@ -1,0 +1,1 @@
+export {OrdersPage as ChefOrdersPage} from "./orders";

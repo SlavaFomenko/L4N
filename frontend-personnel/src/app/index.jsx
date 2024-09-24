@@ -4,7 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 import Routing from "../pages";
 
-import { store } from "../store";
+import { store } from "./store";
 
 function App() {
   return (
