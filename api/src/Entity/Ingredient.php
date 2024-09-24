@@ -3,20 +3,38 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['ingredient:read']],
-    denormalizationContext: ['groups' => ['ingredient:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['get:item:ingredient']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:ingredient']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:ingredient']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:ingredient']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:ingredient']]),
+        new Delete()
+    ]
 )]
 class Ingredient
 {
@@ -26,42 +44,78 @@ class Ingredient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ingredient:read'])]
+    #[Groups(['get:item:ingredient', 'get:collection:ingredient'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['ingredient:read', 'ingredient:write'])]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
+    #[Groups([
+        'get:item:ingredient',
+        'get:collection:ingredient',
+        'post:collection:ingredient',
+        'put:item:ingredient',
+        'patch:item:ingredient'
+    ])]
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['ingredient:read', 'ingredient:write'])]
+    #[NotBlank]
+    #[Type('string')]
+    #[Length(min: 1)]
+    #[Groups([
+        'get:item:ingredient',
+        'get:collection:ingredient',
+        'post:collection:ingredient',
+        'put:item:ingredient',
+        'patch:item:ingredient'
+    ])]
     private ?string $picture = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['ingredient:read', 'ingredient:write'])]
+    #[Type('bool')]
+    #[Choice(choices: [true, false])]
+    #[Groups([
+        'get:item:ingredient',
+        'get:collection:ingredient',
+        'post:collection:ingredient',
+        'put:item:ingredient',
+        'patch:item:ingredient'
+    ])]
     private ?bool $isAllergic = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
-    #[Groups(['ingredient:read', 'ingredient:write'])]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
+    #[Groups([
+        'get:item:ingredient',
+        'get:collection:ingredient',
+        'post:collection:ingredient',
+        'put:item:ingredient',
+        'patch:item:ingredient'
+    ])]
     private ?int $count = null;
 
     /**
      * @var Collection<int, IngredientDish>
      */
     #[ORM\OneToMany(targetEntity: IngredientDish::class, mappedBy: 'ingredient')]
-    #[Groups(['ingredient:read'])]
+    #[Groups(['get:item:ingredient', 'get:collection:ingredient'])]
     private Collection $ingredientDishes;
 
     /**
@@ -121,7 +175,7 @@ class Ingredient
     /**
      * @return bool|null
      */
-    public function isAllergic(): ?bool
+    public function getIsAllergic(): ?bool
     {
         return $this->isAllergic;
     }

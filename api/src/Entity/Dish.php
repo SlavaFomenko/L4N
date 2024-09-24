@@ -3,20 +3,38 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\DishRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: DishRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['dish:read']],
-    denormalizationContext: ['groups' => ['dish:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['get:item:dish']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:dish']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:dish']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:dish']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:dish']]),
+        new Delete()
+    ],
 )]
 class Dish
 {
@@ -26,69 +44,134 @@ class Dish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['dish:read'])]
+    #[Groups(['get:item:dish', 'get:collection:dish'])]
     private ?int $id = null;
-
     /**
      * @var Menu|null
      */
     #[ORM\ManyToOne(inversedBy: 'dishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?Menu $menu = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $price = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[NotBlank]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1)]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $description = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 3)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $weight = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[NotBlank]
+    #[Type('string')]
+    #[Length(min: 1)]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?string $picture = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['dish:read', 'dish:write'])]
+    #[Type('bool')]
+    #[Choice(choices: [true, false])]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
     private ?bool $isHidden = null;
+
+
+    #[ORM\Column(length: 255)]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
+    #[Groups([
+        'get:item:dish',
+        'get:collection:dish',
+        'post:collection:dish',
+        'put:item:dish',
+        'patch:item:dish'
+    ])]
+    private ?string $title = null;
+
 
     /**
      * @var Collection<int, IngredientDish>
      */
     #[ORM\OneToMany(targetEntity: IngredientDish::class, mappedBy: 'dish')]
-    #[Groups(['dish:read'])]
+    #[Groups(['get:item:dish', 'get:collection:dish'])]
     private Collection $ingredientDishes;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'dish')]
-    #[Groups(['dish:read'])]
+    #[Groups(['get:item:dish', 'get:collection:dish'])]
     private Collection $orderDishes;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['dish:read', 'dish:write'])]
-    private ?string $title = null;
+
 
     /**
      *
@@ -205,7 +288,7 @@ class Dish
     /**
      * @return bool|null
      */
-    public function isHidden(): ?bool
+    public function getIsHidden(): ?bool
     {
         return $this->isHidden;
     }

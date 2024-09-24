@@ -3,17 +3,32 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\IngredientDishRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: IngredientDishRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['ingredientDish:read']],
-    denormalizationContext: ['groups' => ['ingredientDish:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['get:item:ingredientDish']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:ingredientDish']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:ingredientDish']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:ingredientDish']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:ingredientDish']]),
+        new Delete()
+    ],
 )]
 class IngredientDish
 {
@@ -23,7 +38,7 @@ class IngredientDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ingredientDish:read'])]
+    #[Groups(['get:item:ingredientDish', 'get:collection:ingredientDish'])]
     private ?int $id = null;
 
     /**
@@ -31,7 +46,14 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:ingredientDish',
+        'get:collection:ingredientDish',
+        'post:collection:ingredientDish',
+        'put:item:ingredientDish',
+        'patch:item:ingredientDish'
+    ])]
     private ?Ingredient $ingredient = null;
 
     /**
@@ -39,14 +61,29 @@ class IngredientDish
      */
     #[ORM\ManyToOne(inversedBy: 'ingredientDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:ingredientDish',
+        'get:collection:ingredientDish',
+        'post:collection:ingredientDish',
+        'put:item:ingredientDish',
+        'patch:item:ingredientDish'
+    ])]
     private ?Dish $dish = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['ingredientDish:read', 'ingredientDish:write'])]
+    #[Type('bool')]
+    #[Choice(choices: [true, false])]
+    #[Groups([
+        'get:item:ingredientDish',
+        'get:collection:ingredientDish',
+        'post:collection:ingredientDish',
+        'put:item:ingredientDish',
+        'patch:item:ingredientDish'
+    ])]
     private ?bool $isCompulsoryItem = null;
 
 
@@ -99,7 +136,7 @@ class IngredientDish
     /**
      * @return bool|null
      */
-    public function isCompulsoryItem(): ?bool
+    public function getIsCompulsoryItem(): ?bool
     {
         return $this->isCompulsoryItem;
     }

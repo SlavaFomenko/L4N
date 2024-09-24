@@ -3,11 +3,18 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  *
@@ -15,8 +22,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
 #[ApiResource(
-    normalizationContext: ['groups' => ['order:read']],
-    denormalizationContext: ['groups' => ['order:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['get:item:order']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:order']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:order']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:order']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:order']]),
+        new Delete()
+    ],
 )]
 class Order
 {
@@ -26,7 +39,7 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['order:read'])]
+    #[Groups(['get:item:order', 'get:collection:order'])]
     private ?int $id = null;
 
     /**
@@ -34,7 +47,14 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['order:read', 'order:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:order',
+        'get:collection:order',
+        'post:collection:order',
+        'put:item:order',
+        'patch:item:order'
+    ])]
     private ?StatusOrder $statusOrder = null;
 
     /**
@@ -42,21 +62,28 @@ class Order
      */
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['order:read', 'order:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:order',
+        'get:collection:order',
+        'post:collection:order',
+        'put:item:order',
+        'patch:item:order'
+    ])]
     private ?Table $table = null;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'order')]
-    #[Groups(['order:read'])]
+    #[Groups(['get:item:order', 'get:collection:order'])]
     private Collection $receipts;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'order')]
-    #[Groups(['order:read'])]
+    #[Groups(['get:item:order', 'get:collection:order'])]
     private Collection $orderDishes;
 
     /**

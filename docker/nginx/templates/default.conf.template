@@ -27,23 +27,30 @@ server {
     error_log /var/log/nginx/${NGINX_HOST}.error.log;
 
 
+
+
+    location /personnel {
+            proxy_pass http://frontend-personnel:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            add_header Cache-Control "private, must-revalidate, max-age=3153600";
+        }
+
     location / {
-        proxy_pass http://frontend:3000;
-        root /var/www/project/frontend/public;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        add_header Cache-Control "private, must-revalidate, max-age=3153600";
+       root /var/www/project/frontend-guest/dist;
+       index index.html;
+       try_files $uri $uri/ /index.html;
     }
 
-    location ~ ^/(/|static/|images/|img/|javascript/|js/|css/|dist/|media/|locales/|logo192.png|robots.txt|favicon.ico|manifest.json|.+\.hot-update.js) {
-       proxy_pass http://frontend:3000;
-       root /var/www/project/frontend/public;
-       access_log off;
-       add_header Cache-Control no-cache;
-       expires 1s;
+    location ~ ^/personnel/(/|static/|images/|img/|javascript/|js/|css/|dist/|media/|locales/|logo192.png|robots.txt|favicon.ico|manifest.json|.+\.hot-update.js) {
+        proxy_pass http://frontend-personnel:3000;
+        root /var/www/project/frontend-personnel/public;
+        access_log off;
+        add_header Cache-Control no-cache;
+        expires 1s;
     }
 
     location /api {
@@ -63,9 +70,10 @@ server {
         internal;
     }
 
-    location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|js|tar|wav|bmp|rtf|mp4|svg|svgz})$ {
+    location ~ ^/api/.+\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|js|tar|wav|bmp|rtf|mp4|svg|svgz) {
         root /var/www/project/api/public;
         add_header Cache-Control "private, max-age=3153600";
+        rewrite ^/api(.*)$ $1 break;
     }
 
     location ~ \.php$ {

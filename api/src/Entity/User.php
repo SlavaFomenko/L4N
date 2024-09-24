@@ -3,7 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;>
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasherState;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,15 +18,24 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-    operations:
-    [
-        new Post(processor: UserPasswordHasherState::class)
+    operations: [
+        new Get(normalizationContext: ['groups' => ['get:item:user']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:user']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:user']],processor: UserPasswordHasherState::class),
+        new Put(denormalizationContext: ['groups' => ['put:item:user']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:user']]),
+        new Delete()
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -36,63 +50,91 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read'])]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $email = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Type('string')]
+    #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
+    #[Length(min: 1, max: 255)]
+    #[NotBlank]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $username = null;
 
     /**
      * @var array|null
      */
     #[ORM\Column(type: Types::ARRAY)]
-    #[Groups(['user:read', 'user:write'])]
+    #[NotBlank]
+    #[Groups(['get:item:user',
+        'get:collection:user',
+        'post:collection:user',
+        'put:item:user',
+        'patch:item:user'])]
     private ?array $roles = [User::ROLE_USER];
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Type('string')]
+    #[NotBlank]
+    #[Regex("/(?=.*\+[0-9]{3}\s?[0-9]{2}\s?[0-9]{3}\s?[0-9]{4,5}$)/")]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $phone = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['get:item:user',
+              'get:collection:user',
+              'post:collection:user',
+              'put:item:user',
+              'patch:item:user'])]
     private ?string $password = null;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user')]
-    #[Groups(['user:read'])]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private Collection $reservations;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'user')]
-    #[Groups(['user:read'])]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private Collection $receipts;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'user')]
-    #[Groups(['user:read'])]
+    #[Groups(['get:item:user', 'get:collection:user'])]
     private Collection $orderDishes;
 
     /**

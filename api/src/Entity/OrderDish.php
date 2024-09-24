@@ -3,18 +3,32 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\OrderDishRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: OrderDishRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['orderDish:read']],
-    denormalizationContext: ['groups' => ['orderDish:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['get:item:orderDish']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:orderDish']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:orderDish']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:orderDish']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:orderDish']]),
+        new Delete()
+    ],
 )]
 class OrderDish
 {
@@ -24,7 +38,7 @@ class OrderDish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['orderDish:read'])]
+    #[Groups(['get:item:orderDish', 'get:collection:orderDish'])]
     private ?int $id = null;
 
     /**
@@ -32,7 +46,14 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['orderDish:read', 'orderDish:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:orderDish',
+        'get:collection:orderDish',
+        'post:collection:orderDish',
+        'put:item:orderDish',
+        'patch:item:orderDish'
+    ])]
     private ?Dish $dish = null;
 
     /**
@@ -40,7 +61,14 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['orderDish:read', 'orderDish:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:orderDish',
+        'get:collection:orderDish',
+        'post:collection:orderDish',
+        'put:item:orderDish',
+        'patch:item:orderDish'
+    ])]
     private ?User $user = null;
 
     /**
@@ -48,7 +76,14 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['orderDish:read', 'orderDish:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:orderDish',
+        'get:collection:orderDish',
+        'post:collection:orderDish',
+        'put:item:orderDish',
+        'patch:item:orderDish'
+    ])]
     private ?StatusDish $statusDish = null;
 
 
@@ -57,21 +92,41 @@ class OrderDish
      */
     #[ORM\ManyToOne(inversedBy: 'orderDishes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['orderDish:read', 'orderDish:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:orderDish',
+        'get:collection:orderDish',
+        'post:collection:orderDish',
+        'put:item:orderDish',
+        'patch:item:orderDish'
+    ])]
     private ?Order $order = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    #[Groups(['orderDish:read', 'orderDish:write'])]
+    #[NotBlank]
+    #[Groups([
+        'get:item:orderDish',
+        'get:collection:orderDish',
+        'post:collection:orderDish',
+        'put:item:orderDish',
+        'patch:item:orderDish'
+    ])]
     private ?\DateTimeInterface $startTime = null;
 
     /**
      * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    #[Groups(['orderDish:read', 'orderDish:write'])]
+    #[Groups([
+        'get:item:orderDish',
+        'get:collection:orderDish',
+        'post:collection:orderDish',
+        'put:item:orderDish',
+        'patch:item:orderDish'
+    ])]
     private ?\DateTimeInterface $endTime = null;
 
     /**

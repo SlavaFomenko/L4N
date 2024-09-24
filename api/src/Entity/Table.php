@@ -3,11 +3,21 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\TableRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -15,8 +25,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: TableRepository::class)]
 #[ORM\Table(name: '`table`')]
 #[ApiResource(
-    normalizationContext: ['groups' => ['table:read']],
-    denormalizationContext: ['groups' => ['table:write']]
+    operations: [
+        new Get(normalizationContext: ['groups' => ['get:item:table']]),
+        new GetCollection(normalizationContext: ['groups' => ['get:collection:table']]),
+        new Post(denormalizationContext: ['groups' => ['post:collection:table']]),
+        new Put(denormalizationContext: ['groups' => ['put:item:table']]),
+        new Patch(denormalizationContext: ['groups' => ['patch:item:table']]),
+        new Delete()
+    ],
 )]
 class Table
 {
@@ -26,42 +42,62 @@ class Table
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['table:read'])]
+    #[Groups(['get:item:table', 'get:collection:table'])]
     private ?int $id = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
-    #[Groups(['table:read', 'table:write'])]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
+    #[Groups(['get:item:table',
+              'get:collection:table',
+              'post:collection:table',
+              'put:item:table',
+              'patch:item:table'])]
     private ?int $number = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column]
-    #[Groups(['table:read', 'table:write'])]
+    #[NotBlank]
+    #[Positive]
+    #[Type("numeric")]
+    #[Groups(['get:item:table',
+              'get:collection:table',
+              'post:collection:table',
+              'put:item:table',
+              'patch:item:table'])]
     private ?int $countSeatPlace = null;
 
     /**
      * @var bool|null
      */
     #[ORM\Column]
-    #[Groups(['table:read', 'table:write'])]
+    #[Type('bool')]
+    #[Choice(choices: [true, false])]
+    #[Groups(['get:item:table',
+              'get:collection:table',
+              'post:collection:table',
+              'put:item:table',
+              'patch:item:table'])]
     private ?bool $isTake = null;
 
     /**
      * @var Collection<int, Order>
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'table')]
-    #[Groups(['table:read'])]
+    #[Groups(['get:item:table', 'get:collection:table'])]
     private Collection $orders;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'table')]
-    #[Groups(['table:read'])]
+    #[Groups(['get:item:table', 'get:collection:table'])]
     private Collection $reservations;
 
 
@@ -200,7 +236,7 @@ class Table
     /**
      * @return bool|null
      */
-    public function isTake(): ?bool
+    public function getIsTake(): ?bool
     {
         return $this->isTake;
     }
