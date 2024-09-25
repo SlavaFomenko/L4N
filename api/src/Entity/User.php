@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasherState;
+use App\Validator\UserValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -18,10 +19,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  *
@@ -31,9 +35,9 @@ use Symfony\Component\Validator\Constraints\Type;
     operations: [
         new Get(normalizationContext: ['groups' => ['get:item:user']]),
         new GetCollection(normalizationContext: ['groups' => ['get:collection:user']]),
-        new Post(denormalizationContext: ['groups' => ['post:collection:user']],processor: UserPasswordHasherState::class),
-        new Put(denormalizationContext: ['groups' => ['put:item:user']]),
-        new Patch(denormalizationContext: ['groups' => ['patch:item:user']]),
+        new Post(normalizationContext: ['groups' => ['post:collection:user:output']], denormalizationContext: ['groups' => ['post:collection:user']], processor: UserPasswordHasherState::class),
+        new Put(normalizationContext: ['groups' => ['post:collection:user:output']], denormalizationContext: ['groups' => ['put:item:user']], processor: UserPasswordHasherState::class),
+        new Patch(normalizationContext: ['groups' => ['post:collection:user:output']], denormalizationContext: ['groups' => ['patch:item:user']], processor: UserPasswordHasherState::class),
         new Delete()
     ]
 )]
@@ -49,18 +53,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['get:item:user', 'get:collection:user'])]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user',
+        'post:collection:user:output'
+    ])]
     private ?int $id = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['get:item:user',
-              'get:collection:user',
-              'post:collection:user',
-              'put:item:user',
-              'patch:item:user'])]
+    #[Email(groups: ['validate_email'])]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user',
+        'post:collection:user',
+        'put:item:user',
+        'patch:item:user',
+        'post:collection:user:output'
+    ])]
     private ?string $email = null;
 
     /**
@@ -71,23 +83,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Regex('/[A-Za-zА-Яа-я0-9іІЇїЄєЪъЭэёЁ\s]/')]
     #[Length(min: 1, max: 255)]
     #[NotBlank]
-    #[Groups(['get:item:user',
-              'get:collection:user',
-              'post:collection:user',
-              'put:item:user',
-              'patch:item:user'])]
-    private ?string $username = null;
-
-    /**
-     * @var array|null
-     */
-    #[ORM\Column(type: Types::ARRAY)]
-    #[NotBlank]
-    #[Groups(['get:item:user',
+    #[Groups([
+        'get:item:user',
         'get:collection:user',
         'post:collection:user',
         'put:item:user',
-        'patch:item:user'])]
+        'patch:item:user',
+        'post:collection:user:output'
+    ])]
+    private ?string $username = null;
+
+    /**
+     * @var array|string[]|null
+     */
+    #[ORM\Column(type: Types::JSON)]
+    #[NotBlank]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user',
+        'post:collection:user',
+        'put:item:user',
+        'patch:item:user',
+        'post:collection:user:output'
+    ])]
     private ?array $roles = [User::ROLE_USER];
 
     /**
@@ -97,45 +115,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Type('string')]
     #[NotBlank]
     #[Regex("/(?=.*\+[0-9]{3}\s?[0-9]{2}\s?[0-9]{3}\s?[0-9]{4,5}$)/")]
-    #[Groups(['get:item:user',
-              'get:collection:user',
-              'post:collection:user',
-              'put:item:user',
-              'patch:item:user'])]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user',
+        'post:collection:user',
+        'put:item:user',
+        'patch:item:user',
+        'post:collection:user:output'
+    ])]
     private ?string $phone = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['get:item:user',
-              'get:collection:user',
-              'post:collection:user',
-              'put:item:user',
-              'patch:item:user'])]
+    #[Length(min: 6, max: 255, groups: ['validate_password'])]
+    #[Groups([
+        'post:collection:user',
+        'put:item:user',
+        'patch:item:user'
+    ])]
     private ?string $password = null;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user')]
-    #[Groups(['get:item:user', 'get:collection:user'])]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user'
+    ])]
     private Collection $reservations;
 
     /**
      * @var Collection<int, Receipt>
      */
     #[ORM\OneToMany(targetEntity: Receipt::class, mappedBy: 'user')]
-    #[Groups(['get:item:user', 'get:collection:user'])]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user'
+    ])]
     private Collection $receipts;
 
     /**
      * @var Collection<int, OrderDish>
      */
     #[ORM\OneToMany(targetEntity: OrderDish::class, mappedBy: 'user')]
-    #[Groups(['get:item:user', 'get:collection:user'])]
+    #[Groups([
+        'get:item:user',
+        'get:collection:user'
+    ])]
     private Collection $orderDishes;
 
+    #[Callback]
+    public function validateFields(ExecutionContextInterface $context): void
+    {
+        UserValidator::validate($this, $context);
+    }
     /**
      *
      */
@@ -370,4 +406,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->email;
     }
+
+
+
 }
